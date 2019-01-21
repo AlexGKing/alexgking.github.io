@@ -96,18 +96,18 @@
 
 
 
-  <meta name="description" content="1.基本概念2.六大基本原则 总原则：开闭原则（Open Close Principle）开闭原则就是说对扩展开放，对修改关闭。在程序需要进行拓展的时候，不能去修改原有的代码，而是要扩展原有代码，实现一个热插拔的效果。所以一句话概括就是：为了使程序的扩展性好，易于维护和升级。想要达到这样的效果，我们需要使用接口和抽象类等，后面的具体设计中我们会提到这点。  1、单一职责原则不要存在多于一个导致类变">
+  <meta name="description" content="1.基本概念 设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。  2.六大基本原则 总原则：开闭原则（Open Close Principle）开闭原则就是说对扩展开放，对修改关闭。在程序需要进行拓展的时候，">
 <meta name="keywords" content="design pattern,设计模式">
 <meta property="og:type" content="article">
 <meta property="og:title" content="设计模式总览">
 <meta property="og:url" content="http://yoursite.com/2019/01/20/dp_0_overview/index.html">
 <meta property="og:site_name" content="AlexKing&#39;s Blog">
-<meta property="og:description" content="1.基本概念2.六大基本原则 总原则：开闭原则（Open Close Principle）开闭原则就是说对扩展开放，对修改关闭。在程序需要进行拓展的时候，不能去修改原有的代码，而是要扩展原有代码，实现一个热插拔的效果。所以一句话概括就是：为了使程序的扩展性好，易于维护和升级。想要达到这样的效果，我们需要使用接口和抽象类等，后面的具体设计中我们会提到这点。  1、单一职责原则不要存在多于一个导致类变">
+<meta property="og:description" content="1.基本概念 设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。  2.六大基本原则 总原则：开闭原则（Open Close Principle）开闭原则就是说对扩展开放，对修改关闭。在程序需要进行拓展的时候，">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-01-20T11:04:54.783Z">
+<meta property="og:updated_time" content="2019-01-21T14:36:32.497Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="设计模式总览">
-<meta name="twitter:description" content="1.基本概念2.六大基本原则 总原则：开闭原则（Open Close Principle）开闭原则就是说对扩展开放，对修改关闭。在程序需要进行拓展的时候，不能去修改原有的代码，而是要扩展原有代码，实现一个热插拔的效果。所以一句话概括就是：为了使程序的扩展性好，易于维护和升级。想要达到这样的效果，我们需要使用接口和抽象类等，后面的具体设计中我们会提到这点。  1、单一职责原则不要存在多于一个导致类变">
+<meta name="twitter:description" content="1.基本概念 设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。  2.六大基本原则 总原则：开闭原则（Open Close Principle）开闭原则就是说对扩展开放，对修改关闭。在程序需要进行拓展的时候，">
 
 
 
@@ -349,12 +349,24 @@
                 
               
 
-              <time title="创建时间：2019-01-20 11:55:57 / 修改时间：19:04:54" itemprop="dateCreated datePublished" datetime="2019-01-20T11:55:57+08:00">2019-01-20</time>
+              <time title="创建时间：2019-01-20 11:55:57" itemprop="dateCreated datePublished" datetime="2019-01-20T11:55:57+08:00">2019-01-20</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-01-21 22:36:32" itemprop="dateModified" datetime="2019-01-21T22:36:32+08:00">2019-01-21</time>
               
             
           </span>
@@ -406,7 +418,10 @@
       
 
       
-        <h2 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1.基本概念"></a>1.基本概念</h2><h2 id="2-六大基本原则"><a href="#2-六大基本原则" class="headerlink" title="2.六大基本原则"></a>2.六大基本原则</h2><ul>
+        <h2 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1.基本概念"></a>1.基本概念</h2><ul>
+<li>设计模式（Design pattern）代表了最佳的实践，通常被有经验的面向对象的软件开发人员所采用。设计模式是软件开发人员在软件开发过程中面临的一般问题的解决方案。这些解决方案是众多软件开发人员经过相当长的一段时间的试验和错误总结出来的。</li>
+</ul>
+<h2 id="2-六大基本原则"><a href="#2-六大基本原则" class="headerlink" title="2.六大基本原则"></a>2.六大基本原则</h2><ul>
 <li><p>总原则：开闭原则（Open Close Principle）<br>开闭原则就是说对扩展开放，对修改关闭。在程序需要进行拓展的时候，不能去修改原有的代码，而是要扩展原有代码，实现一个热插拔的效果。所以一句话概括就是：为了使程序的扩展性好，易于维护和升级。想要达到这样的效果，我们需要使用接口和抽象类等，后面的具体设计中我们会提到这点。</p>
 </li>
 <li><p>1、单一职责原则<br>不要存在多于一个导致类变更的原因，也就是说每个类应该实现单一的职责，如若不然，就应该把类拆分。</p>
