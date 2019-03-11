@@ -96,25 +96,25 @@
 
 
 
-  <meta name="description" content="设计模式之原型模式TODO">
-<meta name="keywords" content="design pattern,设计模式">
+  <meta name="description" content="Kafka存储机制 Kafka的基本存储单元是分区 分区无法在多个broker间进行再细分 分区也无法在同一个broker的多个磁盘上进行细分 分区的大小受broker单个挂载点可用空间的限制 通过参数log.dirs来指定存储分区的挂载点（可以是多个目录）  1.分区分配在创建主题时，Kafka需要决定如何将分区合理分配到不同的broker上。合理分配分区需要达到如下目标：  broker之间平">
+<meta name="keywords" content="Kafka,大数据,分布式,消息队列">
 <meta property="og:type" content="article">
-<meta property="og:title" content="设计模式之原型模式">
-<meta property="og:url" content="http://yoursite.com/2017/01/25/dp_4_prototype_pattern/index.html">
+<meta property="og:title" content="Kafka之存储机制">
+<meta property="og:url" content="http://yoursite.com/2018/02/05/kafka_storage/index.html">
 <meta property="og:site_name" content="AlexKing&#39;s Blog">
-<meta property="og:description" content="设计模式之原型模式TODO">
+<meta property="og:description" content="Kafka存储机制 Kafka的基本存储单元是分区 分区无法在多个broker间进行再细分 分区也无法在同一个broker的多个磁盘上进行细分 分区的大小受broker单个挂载点可用空间的限制 通过参数log.dirs来指定存储分区的挂载点（可以是多个目录）  1.分区分配在创建主题时，Kafka需要决定如何将分区合理分配到不同的broker上。合理分配分区需要达到如下目标：  broker之间平">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-02-17T14:56:17.965Z">
+<meta property="og:updated_time" content="2019-03-10T16:25:11.391Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="设计模式之原型模式">
-<meta name="twitter:description" content="设计模式之原型模式TODO">
+<meta name="twitter:title" content="Kafka之存储机制">
+<meta name="twitter:description" content="Kafka存储机制 Kafka的基本存储单元是分区 分区无法在多个broker间进行再细分 分区也无法在同一个broker的多个磁盘上进行细分 分区的大小受broker单个挂载点可用空间的限制 通过参数log.dirs来指定存储分区的挂载点（可以是多个目录）  1.分区分配在创建主题时，Kafka需要决定如何将分区合理分配到不同的broker上。合理分配分区需要达到如下目标：  broker之间平">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2017/01/25/dp_4_prototype_pattern/">
+  <link rel="canonical" href="http://yoursite.com/2018/02/05/kafka_storage/">
 
 
 
@@ -124,7 +124,7 @@
   };
 </script>
 
-  <title>设计模式之原型模式 | AlexKing's Blog</title>
+  <title>Kafka之存储机制 | AlexKing's Blog</title>
   
 
 
@@ -306,7 +306,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/25/dp_4_prototype_pattern/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/05/kafka_storage/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="AlexKing">
@@ -323,7 +323,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">设计模式之原型模式
+          <h1 class="post-title" itemprop="name headline">Kafka之存储机制
 
               
             
@@ -349,7 +349,7 @@
                 
               
 
-              <time title="创建时间：2017-01-25 11:59:57" itemprop="dateCreated datePublished" datetime="2017-01-25T11:59:57+08:00">2017-01-25</time>
+              <time title="创建时间：2018-02-05 12:05:57" itemprop="dateCreated datePublished" datetime="2018-02-05T12:05:57+08:00">2018-02-05</time>
             
 
             
@@ -366,7 +366,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-02-17 22:56:17" itemprop="dateModified" datetime="2019-02-17T22:56:17+08:00">2019-02-17</time>
+                <time title="修改时间：2019-03-11 00:25:11" itemprop="dateModified" datetime="2019-03-11T00:25:11+08:00">2019-03-11</time>
               
             
           </span>
@@ -383,7 +383,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/设计模式/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Kafka/" itemprop="url" rel="index"><span itemprop="name">Kafka</span></a></span>
 
                 
                 
@@ -418,7 +418,33 @@
       
 
       
-        <h2 id="设计模式之原型模式"><a href="#设计模式之原型模式" class="headerlink" title="设计模式之原型模式"></a>设计模式之原型模式</h2><h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a><em>TODO</em></h2>
+        <h2 id="Kafka存储机制"><a href="#Kafka存储机制" class="headerlink" title="Kafka存储机制"></a>Kafka存储机制</h2><ul>
+<li>Kafka的基本存储单元是分区</li>
+<li>分区无法在多个broker间进行再细分</li>
+<li>分区也无法在同一个broker的多个磁盘上进行细分</li>
+<li>分区的大小受broker单个挂载点可用空间的限制</li>
+<li>通过参数log.dirs来指定存储分区的挂载点（可以是多个目录）</li>
+</ul>
+<h3 id="1-分区分配"><a href="#1-分区分配" class="headerlink" title="1.分区分配"></a>1.分区分配</h3><p>在创建主题时，Kafka需要决定如何将分区合理分配到不同的broker上。合理分配分区需要达到如下目标：</p>
+<ul>
+<li>broker之间平均分配分区</li>
+<li>同一个分区的不同副本需要分布在不同的broker上</li>
+<li>如果配置了机架感知，那么要尽可能地将副本分不到不同机架上</li>
+</ul>
+<p>分区分配的方式主要是通过轮询的方式来决定了，例如一个topic有10分区，每个分区有三个副本，有6个broker；可以先随机选出一个broker，假设broker4,然后让分区0的首领是broker4,分区1的首领是broker5,分区2的首领是broker0（只有6个broker），依次类推；分区0的首领是broker4,那么第一个副本就是broker5,第二个副本就是broker0,分区1的首领在broker5,那么第一个副本就是broker0,第二个副本就是broker1,依次类推；</p>
+<h3 id="2-存储目录的确定"><a href="#2-存储目录的确定" class="headerlink" title="2.存储目录的确定"></a>2.存储目录的确定</h3><p>在将分区分配到合适的broker之后，接下来要决定把分区存储在哪个目录下（log.dirs参数配置的列表）；选取目录的规则是：计算每个目录的分区数量，<strong>新的分区总是被添加到分区数量最少的那个目录里</strong>；</p>
+<h3 id="3-消息保留"><a href="#3-消息保留" class="headerlink" title="3.消息保留"></a>3.消息保留</h3><p>保留数据是Kafka的基本特性之一，但Kafka不会一直保留数据，也不会等到所有消费者都读取消息之后才删除；相反，Kafka是通过为每一个topic配置数据保留期限来规定数据删除前可以保留的时间，或者数据量的大小。</p>
+<p>Kafka为了避免在大文件里查询消息，将分区分成了若干的<strong>片段</strong>；默认情况下每个片段包含1GB或者一周的数据，以较小的那个为准；在broker往分区写入数据时，如果达到片段上限，就会关闭当前文件，并打开一个新的片段文件。</p>
+<p>当前正在写入数据的片段称作<strong>活跃片段</strong>。活跃片段永远不会被删除。</p>
+<p>broker会为分区里的每个片段打开一个文件句柄，过多的文件句柄会影响系统性能，因此要注意片段的个数不易过多。</p>
+<p>Kafka附带了一个叫DumpLogSegment的工具，来查看片段的内容，它可以显示每个消息的偏移量、校验和、魔术数字节、消息大小和压缩算法等信息。–deep-iteration参数，可以显示被压缩到包装消息里的消息</p>
+<p><code>bin/kafka-run-class .sh kafka.tools.DumpLogSegments --deep-iteration</code></p>
+<h3 id="4-文件格式"><a href="#4-文件格式" class="headerlink" title="4.文件格式"></a>4.文件格式</h3><p>Kafka支持将消息进行压缩，压缩是在生产者进行的，broker不会对消息进行解压，会将消息直接发送给消费者。支持的压缩算法包括Snappy、Gzip、LZ4等</p>
+<h3 id="5-索引"><a href="#5-索引" class="headerlink" title="5.索引"></a>5.索引</h3><p>Kafka支持消费者从任意可用偏移量位置开始读取消息。为了达到这个目的，Kafka为每个分区维护了一个索引。索引把偏移量映射到片段文件和偏移量在文件中的位置。</p>
+<p>索引本身也被分成片段，所以在删除消息时，相应的索引也会被删除；Kafka不维护索引的校验和，如果索引出现损坏，Kafka会通过重新读取消息并录制偏移量和位置来重新生成索引。</p>
+<h3 id="6-清理"><a href="#6-清理" class="headerlink" title="6.清理"></a>6.清理</h3><p>用户有时需要只保留key的一个值，而对之前的旧值进行清理，可以为这些Topic设置为compoct策略；这需要消息都是包含键值对的。</p>
+<p>当需要删除特定key时，需要将key的值设为null,然后过一段时间后，该key就会被清理掉</p>
+
       
     </div>
 
@@ -441,9 +467,13 @@
       
         <div class="post-tags">
           
-            <a href="/tags/design-pattern/" rel="tag"># design pattern</a>
+            <a href="/tags/Kafka/" rel="tag"># Kafka</a>
           
-            <a href="/tags/设计模式/" rel="tag"># 设计模式</a>
+            <a href="/tags/大数据/" rel="tag"># 大数据</a>
+          
+            <a href="/tags/分布式/" rel="tag"># 分布式</a>
+          
+            <a href="/tags/消息队列/" rel="tag"># 消息队列</a>
           
         </div>
       
@@ -456,8 +486,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/01/23/dp_3_builder_pattern/" rel="next" title="设计模式之建造者模式">
-                <i class="fa fa-chevron-left"></i> 设计模式之建造者模式
+              <a href="/2017/02/05/dp_10_facade_pattern/" rel="next" title="设计模式之门面模式">
+                <i class="fa fa-chevron-left"></i> 设计模式之门面模式
               </a>
             
           </div>
@@ -466,8 +496,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2017/01/26/dp_5_single_pattern/" rel="prev" title="设计模式之单例模式">
-                设计模式之单例模式 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/01/21/java_exception_0/" rel="prev" title="Java异常体系">
+                Java异常体系 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -632,7 +662,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#设计模式之原型模式"><span class="nav-number">1.</span> <span class="nav-text">设计模式之原型模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TODO"><span class="nav-number">2.</span> <span class="nav-text">TODO</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka存储机制"><span class="nav-number">1.</span> <span class="nav-text">Kafka存储机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-分区分配"><span class="nav-number">1.1.</span> <span class="nav-text">1.分区分配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-存储目录的确定"><span class="nav-number">1.2.</span> <span class="nav-text">2.存储目录的确定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-消息保留"><span class="nav-number">1.3.</span> <span class="nav-text">3.消息保留</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-文件格式"><span class="nav-number">1.4.</span> <span class="nav-text">4.文件格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-索引"><span class="nav-number">1.5.</span> <span class="nav-text">5.索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-清理"><span class="nav-number">1.6.</span> <span class="nav-text">6.清理</span></a></li></ol></li></ol></div>
             
 
           </div>
