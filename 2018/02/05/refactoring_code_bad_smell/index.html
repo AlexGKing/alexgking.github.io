@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="代码的坏味道如何判断一个系统是否需要重构，或者说如何判断代码写的好坏，识别出代码的潜在的风险，从而有针对性地进行重构，将会有事半功倍的效果。代码的坏味道就是帮你识别坏代码的重要方法。这些代码的坏味道，都是经过长期经验总结得出的宝贵经验，帮助你快速识别出可能通过重构来提升代码质量的关键特征。 1.重复代码 最单纯的代码重复就是同一个类的两个方法含有相同的表达式，这时可以通过方法提取（Extract">
+<meta name="keywords" content="重构,代码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="重构————代码的坏味道">
+<meta property="og:url" content="http://yoursite.com/2018/02/05/refactoring_code_bad_smell/index.html">
+<meta property="og:site_name" content="AlexKing&#39;s Blog">
+<meta property="og:description" content="代码的坏味道如何判断一个系统是否需要重构，或者说如何判断代码写的好坏，识别出代码的潜在的风险，从而有针对性地进行重构，将会有事半功倍的效果。代码的坏味道就是帮你识别坏代码的重要方法。这些代码的坏味道，都是经过长期经验总结得出的宝贵经验，帮助你快速识别出可能通过重构来提升代码质量的关键特征。 1.重复代码 最单纯的代码重复就是同一个类的两个方法含有相同的表达式，这时可以通过方法提取（Extract">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-03-17T14:43:29.855Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="重构————代码的坏味道">
+<meta name="twitter:description" content="代码的坏味道如何判断一个系统是否需要重构，或者说如何判断代码写的好坏，识别出代码的潜在的风险，从而有针对性地进行重构，将会有事半功倍的效果。代码的坏味道就是帮你识别坏代码的重要方法。这些代码的坏味道，都是经过长期经验总结得出的宝贵经验，帮助你快速识别出可能通过重构来提升代码质量的关键特征。 1.重复代码 最单纯的代码重复就是同一个类的两个方法含有相同的表达式，这时可以通过方法提取（Extract">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/02/05/refactoring_code_bad_smell/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>重构————代码的坏味道 | AlexKing's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">AlexKing's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/05/refactoring_code_bad_smell/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="AlexKing">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="AlexKing's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">重构————代码的坏味道
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-02-05 12:05:57" itemprop="dateCreated datePublished" datetime="2018-02-05T12:05:57+08:00">2018-02-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-03-17 22:43:29" itemprop="dateModified" datetime="2019-03-17T22:43:29+08:00">2019-03-17</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/重构/" itemprop="url" rel="index"><span itemprop="name">重构</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="代码的坏味道"><a href="#代码的坏味道" class="headerlink" title="代码的坏味道"></a>代码的坏味道</h2><p>如何判断一个系统是否需要重构，或者说如何判断代码写的好坏，识别出代码的潜在的风险，从而有针对性地进行重构，将会有事半功倍的效果。代码的坏味道就是帮你识别坏代码的重要方法。这些代码的坏味道，都是经过长期经验总结得出的宝贵经验，帮助你快速识别出可能通过重构来提升代码质量的关键特征。</p>
+<h3 id="1-重复代码"><a href="#1-重复代码" class="headerlink" title="1.重复代码"></a>1.重复代码</h3><ul>
+<li>最单纯的代码重复就是同一个类的两个方法含有相同的表达式，这时可以通过方法提取（Extract Method）提炼出重复的代码；</li>
+<li>另一种情况是，两个互为兄弟的子类内含相同的表达式，这时可以通过方法提取将提取出的方法放到父类中</li>
+<li>还有一种情况是，两个毫不相干的类出现重复代码，这时可以通过提取类，将重复代码提炼到一个独立的类中</li>
+</ul>
+<h3 id="2-过长函数"><a href="#2-过长函数" class="headerlink" title="2.过长函数"></a>2.过长函数</h3><ul>
+<li>过长的函数难以理解</li>
+<li>小函数的关键在于一个好名字</li>
+<li>遵循的原则：当感觉需要注释来说明的时候，就需要将注释说明的东西独立成一个函数，并以其用途命名</li>
+</ul>
+<h3 id="3-过大的类"><a href="#3-过大的类" class="headerlink" title="3.过大的类"></a>3.过大的类</h3><h3 id="4-过长参数列"><a href="#4-过长参数列" class="headerlink" title="4.过长参数列"></a>4.过长参数列</h3><h3 id="5-发散式变化"><a href="#5-发散式变化" class="headerlink" title="5.发散式变化"></a>5.发散式变化</h3><h3 id="6-散弹式修改"><a href="#6-散弹式修改" class="headerlink" title="6.散弹式修改"></a>6.散弹式修改</h3><h3 id="7-依恋情结"><a href="#7-依恋情结" class="headerlink" title="7.依恋情结"></a>7.依恋情结</h3><h3 id="8-数据泥团"><a href="#8-数据泥团" class="headerlink" title="8.数据泥团"></a>8.数据泥团</h3><h3 id="9-基本类型偏执"><a href="#9-基本类型偏执" class="headerlink" title="9.基本类型偏执"></a>9.基本类型偏执</h3><h3 id="10-switch惊悚现身"><a href="#10-switch惊悚现身" class="headerlink" title="10.switch惊悚现身"></a>10.switch惊悚现身</h3><h3 id="11-平行继承体系"><a href="#11-平行继承体系" class="headerlink" title="11.平行继承体系"></a>11.平行继承体系</h3><h3 id="12-冗赘类"><a href="#12-冗赘类" class="headerlink" title="12.冗赘类"></a>12.冗赘类</h3><h3 id="13-夸夸其谈未来性"><a href="#13-夸夸其谈未来性" class="headerlink" title="13.夸夸其谈未来性"></a>13.夸夸其谈未来性</h3><h3 id="14-令人迷惑的暂时字段"><a href="#14-令人迷惑的暂时字段" class="headerlink" title="14.令人迷惑的暂时字段"></a>14.令人迷惑的暂时字段</h3><h3 id="15-过度耦合的消息链"><a href="#15-过度耦合的消息链" class="headerlink" title="15.过度耦合的消息链"></a>15.过度耦合的消息链</h3><h3 id="16-中间人"><a href="#16-中间人" class="headerlink" title="16.中间人"></a>16.中间人</h3><h3 id="17-狎昵关系"><a href="#17-狎昵关系" class="headerlink" title="17.狎昵关系"></a>17.狎昵关系</h3><h3 id="18-异曲同工的类"><a href="#18-异曲同工的类" class="headerlink" title="18.异曲同工的类"></a>18.异曲同工的类</h3><h3 id="19-不完美的类库"><a href="#19-不完美的类库" class="headerlink" title="19.不完美的类库"></a>19.不完美的类库</h3><h3 id="20-纯粹的数据类"><a href="#20-纯粹的数据类" class="headerlink" title="20.纯粹的数据类"></a>20.纯粹的数据类</h3><h3 id="21-被拒绝的遗赠"><a href="#21-被拒绝的遗赠" class="headerlink" title="21.被拒绝的遗赠"></a>21.被拒绝的遗赠</h3><h3 id="22-过多的注释"><a href="#22-过多的注释" class="headerlink" title="22.过多的注释"></a>22.过多的注释</h3><h2 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h2><h3 id="代码坏味道列表"><a href="#代码坏味道列表" class="headerlink" title="代码坏味道列表"></a>代码坏味道列表</h3><table>
+<thead>
+<tr>
+<th>序号</th>
+<th>中文</th>
+<th>英文</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>重复代码</td>
+<td>Duplicated Code</td>
+</tr>
+<tr>
+<td>2</td>
+<td>过长函数</td>
+<td>Long Method</td>
+</tr>
+<tr>
+<td>3</td>
+<td>过大的类</td>
+<td>Large Class</td>
+</tr>
+<tr>
+<td>4</td>
+<td>过长参数列</td>
+<td>Long Parameter List</td>
+</tr>
+<tr>
+<td>5</td>
+<td>发散式变化</td>
+<td>Divergent Change</td>
+</tr>
+<tr>
+<td>6</td>
+<td>散弹式修改</td>
+<td>Shotgun Surgery</td>
+</tr>
+<tr>
+<td>7</td>
+<td>依恋情结</td>
+<td>Feature Envy</td>
+</tr>
+<tr>
+<td>8</td>
+<td>数据泥团</td>
+<td>Data Clumps</td>
+</tr>
+<tr>
+<td>9</td>
+<td>基本类型偏执</td>
+<td>Primitive Obsession</td>
+</tr>
+<tr>
+<td>10</td>
+<td>switch惊悚现身</td>
+<td>Switch Statements</td>
+</tr>
+<tr>
+<td>11</td>
+<td>平行继承体系</td>
+<td>Parallel Inheritance Hierarchies</td>
+</tr>
+<tr>
+<td>12</td>
+<td>冗赘类</td>
+<td>Lazy Class</td>
+</tr>
+<tr>
+<td>13</td>
+<td>夸夸其谈未来性</td>
+<td>Speculative Generality</td>
+</tr>
+<tr>
+<td>14</td>
+<td>令人迷惑的暂时字段</td>
+<td>Temporary Field</td>
+</tr>
+<tr>
+<td>15</td>
+<td>过度耦合的消息链</td>
+<td>Message Chains</td>
+</tr>
+<tr>
+<td>16</td>
+<td>中间人</td>
+<td>Middle Man</td>
+</tr>
+<tr>
+<td>17</td>
+<td>狎昵关系</td>
+<td>Inappropriate Intimacy</td>
+</tr>
+<tr>
+<td>18</td>
+<td>异曲同工的类</td>
+<td>Alternative Classes with Different Interfaces</td>
+</tr>
+<tr>
+<td>19</td>
+<td>不完美的类库</td>
+<td>Incomplete Library Class</td>
+</tr>
+<tr>
+<td>20</td>
+<td>纯粹的数据类</td>
+<td>Data Class</td>
+</tr>
+<tr>
+<td>21</td>
+<td>被拒绝的遗赠</td>
+<td>Refused Bequest</td>
+</tr>
+<tr>
+<td>22</td>
+<td>过多的注释</td>
+<td>Comments</td>
+</tr>
+</tbody>
+</table>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/重构/" rel="tag"># 重构</a>
+          
+            <a href="/tags/代码/" rel="tag"># 代码</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/02/05/kafka_storage/" rel="next" title="Kafka之存储机制">
+                <i class="fa fa-chevron-left"></i> Kafka之存储机制
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/01/21/java_exception_0/" rel="prev" title="Java异常体系">
+                Java异常体系 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">AlexKing</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">分类</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#代码的坏味道"><span class="nav-number">1.</span> <span class="nav-text">代码的坏味道</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-重复代码"><span class="nav-number">1.1.</span> <span class="nav-text">1.重复代码</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-过长函数"><span class="nav-number">1.2.</span> <span class="nav-text">2.过长函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-过大的类"><span class="nav-number">1.3.</span> <span class="nav-text">3.过大的类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-过长参数列"><span class="nav-number">1.4.</span> <span class="nav-text">4.过长参数列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-发散式变化"><span class="nav-number">1.5.</span> <span class="nav-text">5.发散式变化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-散弹式修改"><span class="nav-number">1.6.</span> <span class="nav-text">6.散弹式修改</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-依恋情结"><span class="nav-number">1.7.</span> <span class="nav-text">7.依恋情结</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-数据泥团"><span class="nav-number">1.8.</span> <span class="nav-text">8.数据泥团</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-基本类型偏执"><span class="nav-number">1.9.</span> <span class="nav-text">9.基本类型偏执</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#10-switch惊悚现身"><span class="nav-number">1.10.</span> <span class="nav-text">10.switch惊悚现身</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#11-平行继承体系"><span class="nav-number">1.11.</span> <span class="nav-text">11.平行继承体系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#12-冗赘类"><span class="nav-number">1.12.</span> <span class="nav-text">12.冗赘类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#13-夸夸其谈未来性"><span class="nav-number">1.13.</span> <span class="nav-text">13.夸夸其谈未来性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#14-令人迷惑的暂时字段"><span class="nav-number">1.14.</span> <span class="nav-text">14.令人迷惑的暂时字段</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#15-过度耦合的消息链"><span class="nav-number">1.15.</span> <span class="nav-text">15.过度耦合的消息链</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#16-中间人"><span class="nav-number">1.16.</span> <span class="nav-text">16.中间人</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#17-狎昵关系"><span class="nav-number">1.17.</span> <span class="nav-text">17.狎昵关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#18-异曲同工的类"><span class="nav-number">1.18.</span> <span class="nav-text">18.异曲同工的类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#19-不完美的类库"><span class="nav-number">1.19.</span> <span class="nav-text">19.不完美的类库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#20-纯粹的数据类"><span class="nav-number">1.20.</span> <span class="nav-text">20.纯粹的数据类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#21-被拒绝的遗赠"><span class="nav-number">1.21.</span> <span class="nav-text">21.被拒绝的遗赠</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#22-过多的注释"><span class="nav-number">1.22.</span> <span class="nav-text">22.过多的注释</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#附录"><span class="nav-number">2.</span> <span class="nav-text">附录</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#代码坏味道列表"><span class="nav-number">2.1.</span> <span class="nav-text">代码坏味道列表</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">AlexKing</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.7.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
