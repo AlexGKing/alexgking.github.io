@@ -104,12 +104,12 @@
 <meta property="og:site_name" content="AlexKing&#39;s Blog">
 <meta property="og:description" content="Kafka系列之生产者1.概述生产者是指将消息发送到Kafka的客户端程序。  Kafka由Java语言实现，内置的客户端API是Java语言的 除了内置Java客户端外，Kafka还提供了二进制连接协议 通过二进制连接协议，其他语言可以自己实现Kafka客户端，如C++、Python、Go等 生产者需要根据不同的应用场景而专门设计，比如低延时、强一致性、高吞吐量等  2.消息生产过程Kafka生">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:image" content="http://yoursite.com/2019/10/03/kafka_producer/C:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/1570113908664.png">
-<meta property="og:updated_time" content="2019-10-03T15:57:40.172Z">
+<meta property="og:image" content="http://yoursite.com/2019/10/03/kafka_producer/kafka_producer.png">
+<meta property="og:updated_time" content="2019-10-03T16:04:41.272Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kafka系列之生产者">
 <meta name="twitter:description" content="Kafka系列之生产者1.概述生产者是指将消息发送到Kafka的客户端程序。  Kafka由Java语言实现，内置的客户端API是Java语言的 除了内置Java客户端外，Kafka还提供了二进制连接协议 通过二进制连接协议，其他语言可以自己实现Kafka客户端，如C++、Python、Go等 生产者需要根据不同的应用场景而专门设计，比如低延时、强一致性、高吞吐量等  2.消息生产过程Kafka生">
-<meta name="twitter:image" content="http://yoursite.com/2019/10/03/kafka_producer/C:/Users/Administrator/AppData/Roaming/Typora/typora-user-images/1570113908664.png">
+<meta name="twitter:image" content="http://yoursite.com/2019/10/03/kafka_producer/kafka_producer.png">
 
 
 
@@ -351,12 +351,24 @@
                 
               
 
-              <time title="创建时间：2019-10-03 16:32:57 / 修改时间：23:57:40" itemprop="dateCreated datePublished" datetime="2019-10-03T16:32:57+08:00">2019-10-03</time>
+              <time title="创建时间：2019-10-03 16:32:57" itemprop="dateCreated datePublished" datetime="2019-10-03T16:32:57+08:00">2019-10-03</time>
             
 
             
               
 
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-10-04 00:04:41" itemprop="dateModified" datetime="2019-10-04T00:04:41+08:00">2019-10-04</time>
               
             
           </span>
@@ -416,7 +428,7 @@
 <li>生产者需要根据不同的应用场景而专门设计，比如低延时、强一致性、高吞吐量等</li>
 </ul>
 <h3 id="2-消息生产过程"><a href="#2-消息生产过程" class="headerlink" title="2.消息生产过程"></a>2.消息生产过程</h3><p>Kafka生产者组件图如下图所示：</p>
-<p><img src="/2019/10/03/kafka_producer/C:/Users\Administrator\AppData\Roaming\Typora\typora-user-images\1570113908664.png" alt="1570113908664"></p>
+<p><img src="/2019/10/03/kafka_producer/kafka_producer.png" alt="Kafka生产者组件图"></p>
 <h4 id="2-1-创建Kafka生产者"><a href="#2-1-创建Kafka生产者" class="headerlink" title="2.1 创建Kafka生产者"></a>2.1 创建Kafka生产者</h4><ul>
 <li>要往Kafka写入消息，首先要创建一个生产者对象，并设置一些属性，其中有3个必选属性</li>
 <li>bootstrap.servers 用于指定broker的地址清单，格式为host:port，不需要包含所有broker信息，生产者可以从给定的broker中找到其他broker信息，但是建议至少要提供两个broker信息，从而提供高可用的保证</li>
