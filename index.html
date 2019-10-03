@@ -302,6 +302,241 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/03/kafka_introduction/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="AlexKing">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="AlexKing's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2019/10/03/kafka_introduction/" class="post-title-link" itemprop="url">Kafka系列之存储机制</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-03 15:22:57 / 修改时间：16:34:44" itemprop="dateCreated datePublished" datetime="2019-10-03T15:22:57+08:00">2019-10-03</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Kafka/" itemprop="url" rel="index"><span itemprop="name">Kafka</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Kafka系列之初识Kafka"><a href="#Kafka系列之初识Kafka" class="headerlink" title="Kafka系列之初识Kafka"></a>Kafka系列之初识Kafka</h2><h3 id="1-基本介绍"><a href="#1-基本介绍" class="headerlink" title="1.基本介绍"></a>1.基本介绍</h3><p>Kafka最初是由Linkedin公司开发的，一个基于Java实现的开源的分布式的数据流处理平台，它不仅仅是一个消息系统，它是一个完善的数据流处理平台。</p>
+<h3 id="2-发布与订阅消息系统"><a href="#2-发布与订阅消息系统" class="headerlink" title="2.发布与订阅消息系统"></a>2.发布与订阅消息系统</h3><ul>
+<li><p>消息发送者不会直接把消息发送给接收者，这是发布与订阅消息系统的最基本的特点。</p>
+</li>
+<li><p>发布与订阅消息系统的好处之一是将消息发送者与接收者进行解耦</p>
+</li>
+<li><p>发布与订阅消息系统将各种消息进行统一抽象处理，从而避免重复开发</p>
+</li>
+<li><p>Kafka相当于将多个发布与订阅消息系统再更高层次上进行抽象和统一</p>
+</li>
+</ul>
+<h3 id="3-Kafka基本概念"><a href="#3-Kafka基本概念" class="headerlink" title="3.Kafka基本概念"></a>3.Kafka基本概念</h3><h4 id="3-1-消息和批次"><a href="#3-1-消息和批次" class="headerlink" title="3.1 消息和批次"></a>3.1 消息和批次</h4><ul>
+<li>消息是Kafka的基本数据单元，相当于数据库中的一个数据行或者一条记录</li>
+<li>消息由字节数组组成，对Kafka来说没有特别的格式和含义</li>
+<li>消息可以有一个可选的元数据，也就是键，键也是字节数组，用于控制消息写入不同分区</li>
+<li>为了提高效率，消息是被封批次写入Kafka的，批次就是属于同一主题和分区的一组消息</li>
+<li>消息模式又称序列化方式是指对消息个描述，一般有JSON、XML、Avro、Proto Buffer等</li>
+</ul>
+<h4 id="3-2-主题和分区"><a href="#3-2-主题和分区" class="headerlink" title="3.2 主题和分区"></a>3.2 主题和分区</h4><ul>
+<li>Kafka的消息是通过主题（Topic）进行分类的,主题类似于数据库中的表或者文件系统的文件夹</li>
+<li>主题可以被封为若干个分区（Partition），一个分区就是一个提交日志（文件）</li>
+<li>消息是以追加的方式写入分区的，然后以先入先出的方式顺序读取</li>
+<li>由于一个主题包含多个分区，因此无法保证整个主题范围内的消息的顺序，但单个分区内消息是有序的</li>
+<li>Kafka通过分区来实现数据冗余和伸缩性，分区可以在不同的服务器上</li>
+</ul>
+<h4 id="3-3-生产者和消费者"><a href="#3-3-生产者和消费者" class="headerlink" title="3.3 生产者和消费者"></a>3.3 生产者和消费者</h4><ul>
+<li>Kafka的客户端就是Kafka系统的用户，可分成两个基本类型：生产者和消费者</li>
+<li>生产者创建消息，在其它发布与订阅系统中也被称为发布者或写入者</li>
+<li>生产者默认情况下把消息均衡地发布到主题的所有分区上</li>
+<li>在某些情况下，生产者可以把消息直接写到指定分区，这依赖于消息键和分区器来实现</li>
+<li>消费者读取消息，在其它发布与订阅系统中也被称为订阅者和读者</li>
+<li>消费者订阅一个或多个主题，并按照消息生成的顺序来读取它们</li>
+<li>偏移量是一种元数据，是一个不断递增的整数值，它描述消息的顺序</li>
+<li>在创建消息时，Kafka会把偏移量添加到消息里</li>
+<li>消费者把分区最后读取的消息偏移量保存在ZK或者Kafka上</li>
+<li>消费者通过检查消息的偏移量来区分消息是否已经读取过</li>
+<li>多个消费者可以组成一个消费者群组，群组保证每个分区只能被群组内的一个消费者使用</li>
+<li>消费者与分区之间的映射通常称为消费者对分区的所有权关系</li>
+</ul>
+<h4 id="3-4-Broer和集群"><a href="#3-4-Broer和集群" class="headerlink" title="3.4 Broer和集群"></a>3.4 Broer和集群</h4><ul>
+<li>一个独立的kafka服务器被称为一个Broker</li>
+<li>Broker接收来自生产者的消息，为消息设置偏移量，并提交消息到磁盘保存</li>
+<li>Broker为消费者提供服务，对读取分区的请求作出响应，返回消息</li>
+<li>多个Broker组成了Kafka集群，每个集群都有一个Broker充当集群控制器的角色</li>
+<li>控制器负责管理工作，包括将分区分给Broker和监控Broker等工作</li>
+<li>在Kafka集群中，一个分区从属于一个Broker,称为该分区的首领</li>
+<li>一个分区会分配给多个Broker,称为分区复制，来保证数据可靠性</li>
+<li>Kafka可以配置消息的保留策略，如果保留7天，或者文件大小到1GB等</li>
+</ul>
+<h4 id="3-5多集群"><a href="#3-5多集群" class="headerlink" title="3.5多集群"></a>3.5多集群</h4><ul>
+<li>在数据类型分离、安全需求隔离、多数据中心场景下、Kafka提供了多集群方案</li>
+<li>Kafka的消息复制机制只能在单个集群中进行</li>
+<li>Kafka提供了MirrorMaker的工具来实现集群间消息复制</li>
+</ul>
+<h3 id="4-总结"><a href="#4-总结" class="headerlink" title="4.总结"></a>4.总结</h3><h4 id="4-1-优势"><a href="#4-1-优势" class="headerlink" title="4.1 优势"></a>4.1 优势</h4><ul>
+<li>多个生产者</li>
+<li>多个消费者</li>
+<li>基于磁盘的数据存储</li>
+<li>灵活的伸缩性</li>
+<li>高性能</li>
+</ul>
+<h4 id="4-2-使用场景"><a href="#4-2-使用场景" class="headerlink" title="4.2 使用场景"></a>4.2 使用场景</h4><ul>
+<li>活动跟踪</li>
+<li>传递消息</li>
+<li>度量指标和日志记录</li>
+<li>提交日志</li>
+<li>流处理</li>
+</ul>
+<h4 id="4-3-历史"><a href="#4-3-历史" class="headerlink" title="4.3 历史"></a>4.3 历史</h4><ul>
+<li>最初由LinkedIn的开发团队开发</li>
+<li>2010年底在Github上开源</li>
+<li>2011年7月成为Apache软件基金会的孵化器项目</li>
+<li>2012年10月从孵化器项目毕业</li>
+<li>2014年秋，Kafka开发核心团队离开LinkedIn创办Confluent公司</li>
+</ul>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/02/11/java8-stream/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1259,6 +1494,402 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/05/kafka_stream/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="AlexKing">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="AlexKing's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/02/05/kafka_stream/" class="post-title-link" itemprop="url">Kafka系列之存储机制</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-02-05 12:05:57" itemprop="dateCreated datePublished" datetime="2018-02-05T12:05:57+08:00">2018-02-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-10-03 15:10:36" itemprop="dateModified" datetime="2019-10-03T15:10:36+08:00">2019-10-03</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Kafka/" itemprop="url" rel="index"><span itemprop="name">Kafka</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Kafka系列之存储机制"><a href="#Kafka系列之存储机制" class="headerlink" title="Kafka系列之存储机制"></a>Kafka系列之存储机制</h2><ul>
+<li>Kafka的基本存储单元是分区</li>
+<li>分区无法在多个broker间进行再细分</li>
+<li>分区也无法在同一个broker的多个磁盘上进行细分</li>
+<li>分区的大小受broker单个挂载点可用空间的限制</li>
+<li>通过参数log.dirs来指定存储分区的挂载点（可以是多个目录）</li>
+</ul>
+<h3 id="1-分区分配"><a href="#1-分区分配" class="headerlink" title="1.分区分配"></a>1.分区分配</h3><p>在创建主题时，Kafka需要决定如何将分区合理分配到不同的broker上。合理分配分区需要达到如下目标：</p>
+<ul>
+<li>broker之间平均分配分区</li>
+<li>同一个分区的不同副本需要分布在不同的broker上</li>
+<li>如果配置了机架感知，那么要尽可能地将副本分不到不同机架上</li>
+</ul>
+<p>分区分配的方式主要是通过轮询的方式来决定了，例如一个topic有10分区，每个分区有三个副本，有6个broker；可以先随机选出一个broker，假设broker4,然后让分区0的首领是broker4,分区1的首领是broker5,分区2的首领是broker0（只有6个broker），依次类推；分区0的首领是broker4,那么第一个副本就是broker5,第二个副本就是broker0,分区1的首领在broker5,那么第一个副本就是broker0,第二个副本就是broker1,依次类推；</p>
+<h3 id="2-存储目录的确定"><a href="#2-存储目录的确定" class="headerlink" title="2.存储目录的确定"></a>2.存储目录的确定</h3><p>在将分区分配到合适的broker之后，接下来要决定把分区存储在哪个目录下（log.dirs参数配置的列表）；选取目录的规则是：计算每个目录的分区数量，<strong>新的分区总是被添加到分区数量最少的那个目录里</strong>；</p>
+<h3 id="3-消息保留"><a href="#3-消息保留" class="headerlink" title="3.消息保留"></a>3.消息保留</h3><p>保留数据是Kafka的基本特性之一，但Kafka不会一直保留数据，也不会等到所有消费者都读取消息之后才删除；相反，Kafka是通过为每一个topic配置数据保留期限来规定数据删除前可以保留的时间，或者数据量的大小。</p>
+<p>Kafka为了避免在大文件里查询消息，将分区分成了若干的<strong>片段</strong>；默认情况下每个片段包含1GB或者一周的数据，以较小的那个为准；在broker往分区写入数据时，如果达到片段上限，就会关闭当前文件，并打开一个新的片段文件。</p>
+<p>当前正在写入数据的片段称作<strong>活跃片段</strong>。活跃片段永远不会被删除。</p>
+<p>broker会为分区里的每个片段打开一个文件句柄，过多的文件句柄会影响系统性能，因此要注意片段的个数不易过多。</p>
+<p>Kafka附带了一个叫DumpLogSegment的工具，来查看片段的内容，它可以显示每个消息的偏移量、校验和、魔术数字节、消息大小和压缩算法等信息。–deep-iteration参数，可以显示被压缩到包装消息里的消息</p>
+<p><code>bin/kafka-run-class .sh kafka.tools.DumpLogSegments --deep-iteration</code></p>
+<h3 id="4-文件格式"><a href="#4-文件格式" class="headerlink" title="4.文件格式"></a>4.文件格式</h3><p>Kafka支持将消息进行压缩，压缩是在生产者进行的，broker不会对消息进行解压，会将消息直接发送给消费者。支持的压缩算法包括Snappy、Gzip、LZ4等</p>
+<h3 id="5-索引"><a href="#5-索引" class="headerlink" title="5.索引"></a>5.索引</h3><p>Kafka支持消费者从任意可用偏移量位置开始读取消息。为了达到这个目的，Kafka为每个分区维护了一个索引。索引把偏移量映射到片段文件和偏移量在文件中的位置。</p>
+<p>索引本身也被分成片段，所以在删除消息时，相应的索引也会被删除；Kafka不维护索引的校验和，如果索引出现损坏，Kafka会通过重新读取消息并录制偏移量和位置来重新生成索引。</p>
+<h3 id="6-清理"><a href="#6-清理" class="headerlink" title="6.清理"></a>6.清理</h3><p>用户有时需要只保留key的一个值，而对之前的旧值进行清理，可以为这些Topic设置为compoct策略；这需要消息都是包含键值对的。</p>
+<p>当需要删除特定key时，需要将key的值设为null,然后过一段时间后，该key就会被清理掉</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/05/kafka_producer/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="AlexKing">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="AlexKing's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                
+                <a href="/2018/02/05/kafka_producer/" class="post-title-link" itemprop="url">Kafka系列之存储机制</a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2018-02-05 12:05:57" itemprop="dateCreated datePublished" datetime="2018-02-05T12:05:57+08:00">2018-02-05</time>
+            
+
+            
+              
+
+              
+                
+                <span class="post-meta-divider">|</span>
+                
+
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                
+                  <span class="post-meta-item-text">更新于</span>
+                
+                <time title="修改时间：2019-10-03 15:10:36" itemprop="dateModified" datetime="2019-10-03T15:10:36+08:00">2019-10-03</time>
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Kafka/" itemprop="url" rel="index"><span itemprop="name">Kafka</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Kafka系列之存储机制"><a href="#Kafka系列之存储机制" class="headerlink" title="Kafka系列之存储机制"></a>Kafka系列之存储机制</h2><ul>
+<li>Kafka的基本存储单元是分区</li>
+<li>分区无法在多个broker间进行再细分</li>
+<li>分区也无法在同一个broker的多个磁盘上进行细分</li>
+<li>分区的大小受broker单个挂载点可用空间的限制</li>
+<li>通过参数log.dirs来指定存储分区的挂载点（可以是多个目录）</li>
+</ul>
+<h3 id="1-分区分配"><a href="#1-分区分配" class="headerlink" title="1.分区分配"></a>1.分区分配</h3><p>在创建主题时，Kafka需要决定如何将分区合理分配到不同的broker上。合理分配分区需要达到如下目标：</p>
+<ul>
+<li>broker之间平均分配分区</li>
+<li>同一个分区的不同副本需要分布在不同的broker上</li>
+<li>如果配置了机架感知，那么要尽可能地将副本分不到不同机架上</li>
+</ul>
+<p>分区分配的方式主要是通过轮询的方式来决定了，例如一个topic有10分区，每个分区有三个副本，有6个broker；可以先随机选出一个broker，假设broker4,然后让分区0的首领是broker4,分区1的首领是broker5,分区2的首领是broker0（只有6个broker），依次类推；分区0的首领是broker4,那么第一个副本就是broker5,第二个副本就是broker0,分区1的首领在broker5,那么第一个副本就是broker0,第二个副本就是broker1,依次类推；</p>
+<h3 id="2-存储目录的确定"><a href="#2-存储目录的确定" class="headerlink" title="2.存储目录的确定"></a>2.存储目录的确定</h3><p>在将分区分配到合适的broker之后，接下来要决定把分区存储在哪个目录下（log.dirs参数配置的列表）；选取目录的规则是：计算每个目录的分区数量，<strong>新的分区总是被添加到分区数量最少的那个目录里</strong>；</p>
+<h3 id="3-消息保留"><a href="#3-消息保留" class="headerlink" title="3.消息保留"></a>3.消息保留</h3><p>保留数据是Kafka的基本特性之一，但Kafka不会一直保留数据，也不会等到所有消费者都读取消息之后才删除；相反，Kafka是通过为每一个topic配置数据保留期限来规定数据删除前可以保留的时间，或者数据量的大小。</p>
+<p>Kafka为了避免在大文件里查询消息，将分区分成了若干的<strong>片段</strong>；默认情况下每个片段包含1GB或者一周的数据，以较小的那个为准；在broker往分区写入数据时，如果达到片段上限，就会关闭当前文件，并打开一个新的片段文件。</p>
+<p>当前正在写入数据的片段称作<strong>活跃片段</strong>。活跃片段永远不会被删除。</p>
+<p>broker会为分区里的每个片段打开一个文件句柄，过多的文件句柄会影响系统性能，因此要注意片段的个数不易过多。</p>
+<p>Kafka附带了一个叫DumpLogSegment的工具，来查看片段的内容，它可以显示每个消息的偏移量、校验和、魔术数字节、消息大小和压缩算法等信息。–deep-iteration参数，可以显示被压缩到包装消息里的消息</p>
+<p><code>bin/kafka-run-class .sh kafka.tools.DumpLogSegments --deep-iteration</code></p>
+<h3 id="4-文件格式"><a href="#4-文件格式" class="headerlink" title="4.文件格式"></a>4.文件格式</h3><p>Kafka支持将消息进行压缩，压缩是在生产者进行的，broker不会对消息进行解压，会将消息直接发送给消费者。支持的压缩算法包括Snappy、Gzip、LZ4等</p>
+<h3 id="5-索引"><a href="#5-索引" class="headerlink" title="5.索引"></a>5.索引</h3><p>Kafka支持消费者从任意可用偏移量位置开始读取消息。为了达到这个目的，Kafka为每个分区维护了一个索引。索引把偏移量映射到片段文件和偏移量在文件中的位置。</p>
+<p>索引本身也被分成片段，所以在删除消息时，相应的索引也会被删除；Kafka不维护索引的校验和，如果索引出现损坏，Kafka会通过重新读取消息并录制偏移量和位置来重新生成索引。</p>
+<h3 id="6-清理"><a href="#6-清理" class="headerlink" title="6.清理"></a>6.清理</h3><p>用户有时需要只保留key的一个值，而对之前的旧值进行清理，可以为这些Topic设置为compoct策略；这需要消息都是包含键值对的。</p>
+<p>当需要删除特定key时，需要将key的值设为null,然后过一段时间后，该key就会被清理掉</p>
+
+          
+        
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/05/kafka_storage/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -1457,7 +2088,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/05/dp_10_facade_pattern/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/05/kafka_monitor/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="AlexKing">
@@ -1477,7 +2108,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2017/02/05/dp_10_facade_pattern/" class="post-title-link" itemprop="url">设计模式之门面模式</a>
+                <a href="/2018/02/05/kafka_monitor/" class="post-title-link" itemprop="url">Kafka系列之存储机制</a>
               
             
           </h1>
@@ -1502,7 +2133,7 @@
                 
               
 
-              <time title="创建时间：2017-02-05 12:05:57" itemprop="dateCreated datePublished" datetime="2017-02-05T12:05:57+08:00">2017-02-05</time>
+              <time title="创建时间：2018-02-05 12:05:57" itemprop="dateCreated datePublished" datetime="2018-02-05T12:05:57+08:00">2018-02-05</time>
             
 
             
@@ -1519,7 +2150,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-02-17 22:57:47" itemprop="dateModified" datetime="2019-02-17T22:57:47+08:00">2019-02-17</time>
+                <time title="修改时间：2019-10-03 15:10:36" itemprop="dateModified" datetime="2019-10-03T15:10:36+08:00">2019-10-03</time>
               
             
           </span>
@@ -1536,7 +2167,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/设计模式/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Kafka/" itemprop="url" rel="index"><span itemprop="name">Kafka</span></a></span>
 
                 
                 
@@ -1573,7 +2204,33 @@
       
         
           
-            <h2 id="设计模式之门面模式"><a href="#设计模式之门面模式" class="headerlink" title="设计模式之门面模式"></a>设计模式之门面模式</h2><h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a><em>TODO</em></h2>
+            <h2 id="Kafka系列之存储机制"><a href="#Kafka系列之存储机制" class="headerlink" title="Kafka系列之存储机制"></a>Kafka系列之存储机制</h2><ul>
+<li>Kafka的基本存储单元是分区</li>
+<li>分区无法在多个broker间进行再细分</li>
+<li>分区也无法在同一个broker的多个磁盘上进行细分</li>
+<li>分区的大小受broker单个挂载点可用空间的限制</li>
+<li>通过参数log.dirs来指定存储分区的挂载点（可以是多个目录）</li>
+</ul>
+<h3 id="1-分区分配"><a href="#1-分区分配" class="headerlink" title="1.分区分配"></a>1.分区分配</h3><p>在创建主题时，Kafka需要决定如何将分区合理分配到不同的broker上。合理分配分区需要达到如下目标：</p>
+<ul>
+<li>broker之间平均分配分区</li>
+<li>同一个分区的不同副本需要分布在不同的broker上</li>
+<li>如果配置了机架感知，那么要尽可能地将副本分不到不同机架上</li>
+</ul>
+<p>分区分配的方式主要是通过轮询的方式来决定了，例如一个topic有10分区，每个分区有三个副本，有6个broker；可以先随机选出一个broker，假设broker4,然后让分区0的首领是broker4,分区1的首领是broker5,分区2的首领是broker0（只有6个broker），依次类推；分区0的首领是broker4,那么第一个副本就是broker5,第二个副本就是broker0,分区1的首领在broker5,那么第一个副本就是broker0,第二个副本就是broker1,依次类推；</p>
+<h3 id="2-存储目录的确定"><a href="#2-存储目录的确定" class="headerlink" title="2.存储目录的确定"></a>2.存储目录的确定</h3><p>在将分区分配到合适的broker之后，接下来要决定把分区存储在哪个目录下（log.dirs参数配置的列表）；选取目录的规则是：计算每个目录的分区数量，<strong>新的分区总是被添加到分区数量最少的那个目录里</strong>；</p>
+<h3 id="3-消息保留"><a href="#3-消息保留" class="headerlink" title="3.消息保留"></a>3.消息保留</h3><p>保留数据是Kafka的基本特性之一，但Kafka不会一直保留数据，也不会等到所有消费者都读取消息之后才删除；相反，Kafka是通过为每一个topic配置数据保留期限来规定数据删除前可以保留的时间，或者数据量的大小。</p>
+<p>Kafka为了避免在大文件里查询消息，将分区分成了若干的<strong>片段</strong>；默认情况下每个片段包含1GB或者一周的数据，以较小的那个为准；在broker往分区写入数据时，如果达到片段上限，就会关闭当前文件，并打开一个新的片段文件。</p>
+<p>当前正在写入数据的片段称作<strong>活跃片段</strong>。活跃片段永远不会被删除。</p>
+<p>broker会为分区里的每个片段打开一个文件句柄，过多的文件句柄会影响系统性能，因此要注意片段的个数不易过多。</p>
+<p>Kafka附带了一个叫DumpLogSegment的工具，来查看片段的内容，它可以显示每个消息的偏移量、校验和、魔术数字节、消息大小和压缩算法等信息。–deep-iteration参数，可以显示被压缩到包装消息里的消息</p>
+<p><code>bin/kafka-run-class .sh kafka.tools.DumpLogSegments --deep-iteration</code></p>
+<h3 id="4-文件格式"><a href="#4-文件格式" class="headerlink" title="4.文件格式"></a>4.文件格式</h3><p>Kafka支持将消息进行压缩，压缩是在生产者进行的，broker不会对消息进行解压，会将消息直接发送给消费者。支持的压缩算法包括Snappy、Gzip、LZ4等</p>
+<h3 id="5-索引"><a href="#5-索引" class="headerlink" title="5.索引"></a>5.索引</h3><p>Kafka支持消费者从任意可用偏移量位置开始读取消息。为了达到这个目的，Kafka为每个分区维护了一个索引。索引把偏移量映射到片段文件和偏移量在文件中的位置。</p>
+<p>索引本身也被分成片段，所以在删除消息时，相应的索引也会被删除；Kafka不维护索引的校验和，如果索引出现损坏，Kafka会通过重新读取消息并录制偏移量和位置来重新生成索引。</p>
+<h3 id="6-清理"><a href="#6-清理" class="headerlink" title="6.清理"></a>6.清理</h3><p>用户有时需要只保留key的一个值，而对之前的旧值进行清理，可以为这些Topic设置为compoct策略；这需要消息都是包含键值对的。</p>
+<p>当需要删除特定key时，需要将key的值设为null,然后过一段时间后，该key就会被清理掉</p>
+
           
         
       
@@ -1629,7 +2286,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/04/dp_9_decorator_pattern/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/05/kafka_manage/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="AlexKing">
@@ -1649,7 +2306,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2017/02/04/dp_9_decorator_pattern/" class="post-title-link" itemprop="url">设计模式之装饰者模式</a>
+                <a href="/2018/02/05/kafka_manage/" class="post-title-link" itemprop="url">Kafka系列之存储机制</a>
               
             
           </h1>
@@ -1674,7 +2331,7 @@
                 
               
 
-              <time title="创建时间：2017-02-04 12:04:57" itemprop="dateCreated datePublished" datetime="2017-02-04T12:04:57+08:00">2017-02-04</time>
+              <time title="创建时间：2018-02-05 12:05:57" itemprop="dateCreated datePublished" datetime="2018-02-05T12:05:57+08:00">2018-02-05</time>
             
 
             
@@ -1691,7 +2348,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-02-17 22:57:29" itemprop="dateModified" datetime="2019-02-17T22:57:29+08:00">2019-02-17</time>
+                <time title="修改时间：2019-10-03 15:10:36" itemprop="dateModified" datetime="2019-10-03T15:10:36+08:00">2019-10-03</time>
               
             
           </span>
@@ -1708,7 +2365,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/设计模式/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Kafka/" itemprop="url" rel="index"><span itemprop="name">Kafka</span></a></span>
 
                 
                 
@@ -1745,7 +2402,33 @@
       
         
           
-            <h2 id="设计模式之装饰者模式"><a href="#设计模式之装饰者模式" class="headerlink" title="设计模式之装饰者模式"></a>设计模式之装饰者模式</h2>
+            <h2 id="Kafka系列之存储机制"><a href="#Kafka系列之存储机制" class="headerlink" title="Kafka系列之存储机制"></a>Kafka系列之存储机制</h2><ul>
+<li>Kafka的基本存储单元是分区</li>
+<li>分区无法在多个broker间进行再细分</li>
+<li>分区也无法在同一个broker的多个磁盘上进行细分</li>
+<li>分区的大小受broker单个挂载点可用空间的限制</li>
+<li>通过参数log.dirs来指定存储分区的挂载点（可以是多个目录）</li>
+</ul>
+<h3 id="1-分区分配"><a href="#1-分区分配" class="headerlink" title="1.分区分配"></a>1.分区分配</h3><p>在创建主题时，Kafka需要决定如何将分区合理分配到不同的broker上。合理分配分区需要达到如下目标：</p>
+<ul>
+<li>broker之间平均分配分区</li>
+<li>同一个分区的不同副本需要分布在不同的broker上</li>
+<li>如果配置了机架感知，那么要尽可能地将副本分不到不同机架上</li>
+</ul>
+<p>分区分配的方式主要是通过轮询的方式来决定了，例如一个topic有10分区，每个分区有三个副本，有6个broker；可以先随机选出一个broker，假设broker4,然后让分区0的首领是broker4,分区1的首领是broker5,分区2的首领是broker0（只有6个broker），依次类推；分区0的首领是broker4,那么第一个副本就是broker5,第二个副本就是broker0,分区1的首领在broker5,那么第一个副本就是broker0,第二个副本就是broker1,依次类推；</p>
+<h3 id="2-存储目录的确定"><a href="#2-存储目录的确定" class="headerlink" title="2.存储目录的确定"></a>2.存储目录的确定</h3><p>在将分区分配到合适的broker之后，接下来要决定把分区存储在哪个目录下（log.dirs参数配置的列表）；选取目录的规则是：计算每个目录的分区数量，<strong>新的分区总是被添加到分区数量最少的那个目录里</strong>；</p>
+<h3 id="3-消息保留"><a href="#3-消息保留" class="headerlink" title="3.消息保留"></a>3.消息保留</h3><p>保留数据是Kafka的基本特性之一，但Kafka不会一直保留数据，也不会等到所有消费者都读取消息之后才删除；相反，Kafka是通过为每一个topic配置数据保留期限来规定数据删除前可以保留的时间，或者数据量的大小。</p>
+<p>Kafka为了避免在大文件里查询消息，将分区分成了若干的<strong>片段</strong>；默认情况下每个片段包含1GB或者一周的数据，以较小的那个为准；在broker往分区写入数据时，如果达到片段上限，就会关闭当前文件，并打开一个新的片段文件。</p>
+<p>当前正在写入数据的片段称作<strong>活跃片段</strong>。活跃片段永远不会被删除。</p>
+<p>broker会为分区里的每个片段打开一个文件句柄，过多的文件句柄会影响系统性能，因此要注意片段的个数不易过多。</p>
+<p>Kafka附带了一个叫DumpLogSegment的工具，来查看片段的内容，它可以显示每个消息的偏移量、校验和、魔术数字节、消息大小和压缩算法等信息。–deep-iteration参数，可以显示被压缩到包装消息里的消息</p>
+<p><code>bin/kafka-run-class .sh kafka.tools.DumpLogSegments --deep-iteration</code></p>
+<h3 id="4-文件格式"><a href="#4-文件格式" class="headerlink" title="4.文件格式"></a>4.文件格式</h3><p>Kafka支持将消息进行压缩，压缩是在生产者进行的，broker不会对消息进行解压，会将消息直接发送给消费者。支持的压缩算法包括Snappy、Gzip、LZ4等</p>
+<h3 id="5-索引"><a href="#5-索引" class="headerlink" title="5.索引"></a>5.索引</h3><p>Kafka支持消费者从任意可用偏移量位置开始读取消息。为了达到这个目的，Kafka为每个分区维护了一个索引。索引把偏移量映射到片段文件和偏移量在文件中的位置。</p>
+<p>索引本身也被分成片段，所以在删除消息时，相应的索引也会被删除；Kafka不维护索引的校验和，如果索引出现损坏，Kafka会通过重新读取消息并录制偏移量和位置来重新生成索引。</p>
+<h3 id="6-清理"><a href="#6-清理" class="headerlink" title="6.清理"></a>6.清理</h3><p>用户有时需要只保留key的一个值，而对之前的旧值进行清理，可以为这些Topic设置为compoct策略；这需要消息都是包含键值对的。</p>
+<p>当需要删除特定key时，需要将key的值设为null,然后过一段时间后，该key就会被清理掉</p>
+
           
         
       
@@ -1801,7 +2484,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/02/02/dp_8_composite_pattern/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/02/05/kafka_consumer/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="AlexKing">
@@ -1821,7 +2504,7 @@
           <h1 class="post-title" itemprop="name headline">
                 
                 
-                <a href="/2017/02/02/dp_8_composite_pattern/" class="post-title-link" itemprop="url">设计模式之组合模式</a>
+                <a href="/2018/02/05/kafka_consumer/" class="post-title-link" itemprop="url">Kafka系列之存储机制</a>
               
             
           </h1>
@@ -1846,7 +2529,7 @@
                 
               
 
-              <time title="创建时间：2017-02-02 12:03:57" itemprop="dateCreated datePublished" datetime="2017-02-02T12:03:57+08:00">2017-02-02</time>
+              <time title="创建时间：2018-02-05 12:05:57" itemprop="dateCreated datePublished" datetime="2018-02-05T12:05:57+08:00">2018-02-05</time>
             
 
             
@@ -1863,7 +2546,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-02-17 23:00:43" itemprop="dateModified" datetime="2019-02-17T23:00:43+08:00">2019-02-17</time>
+                <time title="修改时间：2019-10-03 15:10:36" itemprop="dateModified" datetime="2019-10-03T15:10:36+08:00">2019-10-03</time>
               
             
           </span>
@@ -1880,7 +2563,7 @@
                 <span class="post-meta-item-text">分类于</span>
               
               
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/设计模式/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a></span>
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Kafka/" itemprop="url" rel="index"><span itemprop="name">Kafka</span></a></span>
 
                 
                 
@@ -1917,523 +2600,33 @@
       
         
           
-            <h2 id="设计模式之组合模式"><a href="#设计模式之组合模式" class="headerlink" title="设计模式之组合模式"></a>设计模式之组合模式</h2>
-          
-        
-      
-    </div>
+            <h2 id="Kafka系列之存储机制"><a href="#Kafka系列之存储机制" class="headerlink" title="Kafka系列之存储机制"></a>Kafka系列之存储机制</h2><ul>
+<li>Kafka的基本存储单元是分区</li>
+<li>分区无法在多个broker间进行再细分</li>
+<li>分区也无法在同一个broker的多个磁盘上进行细分</li>
+<li>分区的大小受broker单个挂载点可用空间的限制</li>
+<li>通过参数log.dirs来指定存储分区的挂载点（可以是多个目录）</li>
+</ul>
+<h3 id="1-分区分配"><a href="#1-分区分配" class="headerlink" title="1.分区分配"></a>1.分区分配</h3><p>在创建主题时，Kafka需要决定如何将分区合理分配到不同的broker上。合理分配分区需要达到如下目标：</p>
+<ul>
+<li>broker之间平均分配分区</li>
+<li>同一个分区的不同副本需要分布在不同的broker上</li>
+<li>如果配置了机架感知，那么要尽可能地将副本分不到不同机架上</li>
+</ul>
+<p>分区分配的方式主要是通过轮询的方式来决定了，例如一个topic有10分区，每个分区有三个副本，有6个broker；可以先随机选出一个broker，假设broker4,然后让分区0的首领是broker4,分区1的首领是broker5,分区2的首领是broker0（只有6个broker），依次类推；分区0的首领是broker4,那么第一个副本就是broker5,第二个副本就是broker0,分区1的首领在broker5,那么第一个副本就是broker0,第二个副本就是broker1,依次类推；</p>
+<h3 id="2-存储目录的确定"><a href="#2-存储目录的确定" class="headerlink" title="2.存储目录的确定"></a>2.存储目录的确定</h3><p>在将分区分配到合适的broker之后，接下来要决定把分区存储在哪个目录下（log.dirs参数配置的列表）；选取目录的规则是：计算每个目录的分区数量，<strong>新的分区总是被添加到分区数量最少的那个目录里</strong>；</p>
+<h3 id="3-消息保留"><a href="#3-消息保留" class="headerlink" title="3.消息保留"></a>3.消息保留</h3><p>保留数据是Kafka的基本特性之一，但Kafka不会一直保留数据，也不会等到所有消费者都读取消息之后才删除；相反，Kafka是通过为每一个topic配置数据保留期限来规定数据删除前可以保留的时间，或者数据量的大小。</p>
+<p>Kafka为了避免在大文件里查询消息，将分区分成了若干的<strong>片段</strong>；默认情况下每个片段包含1GB或者一周的数据，以较小的那个为准；在broker往分区写入数据时，如果达到片段上限，就会关闭当前文件，并打开一个新的片段文件。</p>
+<p>当前正在写入数据的片段称作<strong>活跃片段</strong>。活跃片段永远不会被删除。</p>
+<p>broker会为分区里的每个片段打开一个文件句柄，过多的文件句柄会影响系统性能，因此要注意片段的个数不易过多。</p>
+<p>Kafka附带了一个叫DumpLogSegment的工具，来查看片段的内容，它可以显示每个消息的偏移量、校验和、魔术数字节、消息大小和压缩算法等信息。–deep-iteration参数，可以显示被压缩到包装消息里的消息</p>
+<p><code>bin/kafka-run-class .sh kafka.tools.DumpLogSegments --deep-iteration</code></p>
+<h3 id="4-文件格式"><a href="#4-文件格式" class="headerlink" title="4.文件格式"></a>4.文件格式</h3><p>Kafka支持将消息进行压缩，压缩是在生产者进行的，broker不会对消息进行解压，会将消息直接发送给消费者。支持的压缩算法包括Snappy、Gzip、LZ4等</p>
+<h3 id="5-索引"><a href="#5-索引" class="headerlink" title="5.索引"></a>5.索引</h3><p>Kafka支持消费者从任意可用偏移量位置开始读取消息。为了达到这个目的，Kafka为每个分区维护了一个索引。索引把偏移量映射到片段文件和偏移量在文件中的位置。</p>
+<p>索引本身也被分成片段，所以在删除消息时，相应的索引也会被删除；Kafka不维护索引的校验和，如果索引出现损坏，Kafka会通过重新读取消息并录制偏移量和位置来重新生成索引。</p>
+<h3 id="6-清理"><a href="#6-清理" class="headerlink" title="6.清理"></a>6.清理</h3><p>用户有时需要只保留key的一个值，而对之前的旧值进行清理，可以为这些Topic设置为compoct策略；这需要消息都是包含键值对的。</p>
+<p>当需要删除特定key时，需要将key的值设为null,然后过一段时间后，该key就会被清理掉</p>
 
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/29/dp_7_bridge_pattern/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="AlexKing">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="AlexKing's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2017/01/29/dp_7_bridge_pattern/" class="post-title-link" itemprop="url">设计模式之桥接模式</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2017-01-29 12:02:57" itemprop="dateCreated datePublished" datetime="2017-01-29T12:02:57+08:00">2017-01-29</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-02-17 22:56:47" itemprop="dateModified" datetime="2019-02-17T22:56:47+08:00">2019-02-17</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/设计模式/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="设计模式之桥接模式"><a href="#设计模式之桥接模式" class="headerlink" title="设计模式之桥接模式"></a>设计模式之桥接模式</h2><h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a><em>TODO</em></h2>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/27/dp_6_adapter_pattern/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="AlexKing">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="AlexKing's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2017/01/27/dp_6_adapter_pattern/" class="post-title-link" itemprop="url">设计模式之适配器模式</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2017-01-27 12:01:57" itemprop="dateCreated datePublished" datetime="2017-01-27T12:01:57+08:00">2017-01-27</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-02-17 22:56:35" itemprop="dateModified" datetime="2019-02-17T22:56:35+08:00">2019-02-17</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/设计模式/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="设计模式之适配器模式"><a href="#设计模式之适配器模式" class="headerlink" title="设计模式之适配器模式"></a>设计模式之适配器模式</h2><h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a><em>TODO</em></h2>
-          
-        
-      
-    </div>
-
-    
-
-    
-    
-    
-
-    
-
-    
-      
-    
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  
-
-  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2017/01/26/dp_5_single_pattern/">
-
-    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="AlexKing">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/avatar.gif">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="AlexKing's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                
-                <a href="/2017/01/26/dp_5_single_pattern/" class="post-title-link" itemprop="url">设计模式之单例模式</a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-
-            
-            
-            
-
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-
-              
-                
-              
-
-              <time title="创建时间：2017-01-26 12:00:57" itemprop="dateCreated datePublished" datetime="2017-01-26T12:00:57+08:00">2017-01-26</time>
-            
-
-            
-              
-
-              
-                
-                <span class="post-meta-divider">|</span>
-                
-
-                <span class="post-meta-item-icon">
-                  <i class="fa fa-calendar-check-o"></i>
-                </span>
-                
-                  <span class="post-meta-item-text">更新于</span>
-                
-                <time title="修改时间：2019-02-17 22:56:26" itemprop="dateModified" datetime="2019-02-17T22:56:26+08:00">2019-02-17</time>
-              
-            
-          </span>
-
-          
-            <span class="post-category">
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/设计模式/" itemprop="url" rel="index"><span itemprop="name">设计模式</span></a></span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="设计模式之单例模式"><a href="#设计模式之单例模式" class="headerlink" title="设计模式之单例模式"></a>设计模式之单例模式</h2><h2 id="TODO"><a href="#TODO" class="headerlink" title="TODO"></a><em>TODO</em></h2>
           
         
       
@@ -2478,7 +2671,7 @@
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right" aria-label="下一页"></i></a>
   </nav>
 
 
@@ -2521,7 +2714,7 @@
                 
                   <a href="/archives/">
                 
-                    <span class="site-state-item-count">15</span>
+                    <span class="site-state-item-count">22</span>
                     <span class="site-state-item-name">日志</span>
                   </a>
                 </div>

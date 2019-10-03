@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-CN">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2">
+
+<link rel="stylesheet" href="/css/main.css?v=6.7.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.7.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.7.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.7.0" color="#222">
+
+
+
+
+
+
+
+<script id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '6.7.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="Kafka系列之初识Kafka1.基本介绍Kafka最初是由Linkedin公司开发的，一个基于Java实现的开源的分布式的数据流处理平台，它不仅仅是一个消息系统，它是一个完善的数据流处理平台。 2.发布与订阅消息系统 消息发送者不会直接把消息发送给接收者，这是发布与订阅消息系统的最基本的特点。  发布与订阅消息系统的好处之一是将消息发送者与接收者进行解耦  发布与订阅消息系统将各种消息进行统一抽">
+<meta name="keywords" content="Kafka,大数据,分布式,消息队列">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Kafka系列之存储机制">
+<meta property="og:url" content="http://yoursite.com/2019/10/03/kafka_introduction/index.html">
+<meta property="og:site_name" content="AlexKing&#39;s Blog">
+<meta property="og:description" content="Kafka系列之初识Kafka1.基本介绍Kafka最初是由Linkedin公司开发的，一个基于Java实现的开源的分布式的数据流处理平台，它不仅仅是一个消息系统，它是一个完善的数据流处理平台。 2.发布与订阅消息系统 消息发送者不会直接把消息发送给接收者，这是发布与订阅消息系统的最基本的特点。  发布与订阅消息系统的好处之一是将消息发送者与接收者进行解耦  发布与订阅消息系统将各种消息进行统一抽">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-10-03T08:34:44.859Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Kafka系列之存储机制">
+<meta name="twitter:description" content="Kafka系列之初识Kafka1.基本介绍Kafka最初是由Linkedin公司开发的，一个基于Java实现的开源的分布式的数据流处理平台，它不仅仅是一个消息系统，它是一个完善的数据流处理平台。 2.发布与订阅消息系统 消息发送者不会直接把消息发送给接收者，这是发布与订阅消息系统的最基本的特点。  发布与订阅消息系统的好处之一是将消息发送者与接收者进行解耦  发布与订阅消息系统将各种消息进行统一抽">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2019/10/03/kafka_introduction/">
+
+
+
+<script id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Kafka系列之存储机制 | AlexKing's Blog</title>
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .motion-element,
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-title { opacity: initial; }
+
+  .use-motion .logo,
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-CN">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">AlexKing's Blog</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+    
+    
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="切换导航栏">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/" rel="section"><i class="menu-item-icon fa fa-fw fa-home"></i> <br>首页</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-about">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/about/" rel="section"><i class="menu-item-icon fa fa-fw fa-user"></i> <br>关于</a>
+
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+
+    
+    
+    
+      
+    
+
+    
+
+    <a href="/archives/" rel="section"><i class="menu-item-icon fa fa-fw fa-archive"></i> <br>归档</a>
+
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+            
+
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/03/kafka_introduction/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="AlexKing">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="AlexKing's Blog">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Kafka系列之存储机制
+
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+
+              
+                
+              
+
+              <time title="创建时间：2019-10-03 15:22:57 / 修改时间：16:34:44" itemprop="dateCreated datePublished" datetime="2019-10-03T15:22:57+08:00">2019-10-03</time>
+            
+
+            
+              
+
+              
+            
+          </span>
+
+          
+            <span class="post-category">
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope="" itemtype="http://schema.org/Thing"><a href="/categories/Kafka/" itemprop="url" rel="index"><span itemprop="name">Kafka</span></a></span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Kafka系列之初识Kafka"><a href="#Kafka系列之初识Kafka" class="headerlink" title="Kafka系列之初识Kafka"></a>Kafka系列之初识Kafka</h2><h3 id="1-基本介绍"><a href="#1-基本介绍" class="headerlink" title="1.基本介绍"></a>1.基本介绍</h3><p>Kafka最初是由Linkedin公司开发的，一个基于Java实现的开源的分布式的数据流处理平台，它不仅仅是一个消息系统，它是一个完善的数据流处理平台。</p>
+<h3 id="2-发布与订阅消息系统"><a href="#2-发布与订阅消息系统" class="headerlink" title="2.发布与订阅消息系统"></a>2.发布与订阅消息系统</h3><ul>
+<li><p>消息发送者不会直接把消息发送给接收者，这是发布与订阅消息系统的最基本的特点。</p>
+</li>
+<li><p>发布与订阅消息系统的好处之一是将消息发送者与接收者进行解耦</p>
+</li>
+<li><p>发布与订阅消息系统将各种消息进行统一抽象处理，从而避免重复开发</p>
+</li>
+<li><p>Kafka相当于将多个发布与订阅消息系统再更高层次上进行抽象和统一</p>
+</li>
+</ul>
+<h3 id="3-Kafka基本概念"><a href="#3-Kafka基本概念" class="headerlink" title="3.Kafka基本概念"></a>3.Kafka基本概念</h3><h4 id="3-1-消息和批次"><a href="#3-1-消息和批次" class="headerlink" title="3.1 消息和批次"></a>3.1 消息和批次</h4><ul>
+<li>消息是Kafka的基本数据单元，相当于数据库中的一个数据行或者一条记录</li>
+<li>消息由字节数组组成，对Kafka来说没有特别的格式和含义</li>
+<li>消息可以有一个可选的元数据，也就是键，键也是字节数组，用于控制消息写入不同分区</li>
+<li>为了提高效率，消息是被封批次写入Kafka的，批次就是属于同一主题和分区的一组消息</li>
+<li>消息模式又称序列化方式是指对消息个描述，一般有JSON、XML、Avro、Proto Buffer等</li>
+</ul>
+<h4 id="3-2-主题和分区"><a href="#3-2-主题和分区" class="headerlink" title="3.2 主题和分区"></a>3.2 主题和分区</h4><ul>
+<li>Kafka的消息是通过主题（Topic）进行分类的,主题类似于数据库中的表或者文件系统的文件夹</li>
+<li>主题可以被封为若干个分区（Partition），一个分区就是一个提交日志（文件）</li>
+<li>消息是以追加的方式写入分区的，然后以先入先出的方式顺序读取</li>
+<li>由于一个主题包含多个分区，因此无法保证整个主题范围内的消息的顺序，但单个分区内消息是有序的</li>
+<li>Kafka通过分区来实现数据冗余和伸缩性，分区可以在不同的服务器上</li>
+</ul>
+<h4 id="3-3-生产者和消费者"><a href="#3-3-生产者和消费者" class="headerlink" title="3.3 生产者和消费者"></a>3.3 生产者和消费者</h4><ul>
+<li>Kafka的客户端就是Kafka系统的用户，可分成两个基本类型：生产者和消费者</li>
+<li>生产者创建消息，在其它发布与订阅系统中也被称为发布者或写入者</li>
+<li>生产者默认情况下把消息均衡地发布到主题的所有分区上</li>
+<li>在某些情况下，生产者可以把消息直接写到指定分区，这依赖于消息键和分区器来实现</li>
+<li>消费者读取消息，在其它发布与订阅系统中也被称为订阅者和读者</li>
+<li>消费者订阅一个或多个主题，并按照消息生成的顺序来读取它们</li>
+<li>偏移量是一种元数据，是一个不断递增的整数值，它描述消息的顺序</li>
+<li>在创建消息时，Kafka会把偏移量添加到消息里</li>
+<li>消费者把分区最后读取的消息偏移量保存在ZK或者Kafka上</li>
+<li>消费者通过检查消息的偏移量来区分消息是否已经读取过</li>
+<li>多个消费者可以组成一个消费者群组，群组保证每个分区只能被群组内的一个消费者使用</li>
+<li>消费者与分区之间的映射通常称为消费者对分区的所有权关系</li>
+</ul>
+<h4 id="3-4-Broer和集群"><a href="#3-4-Broer和集群" class="headerlink" title="3.4 Broer和集群"></a>3.4 Broer和集群</h4><ul>
+<li>一个独立的kafka服务器被称为一个Broker</li>
+<li>Broker接收来自生产者的消息，为消息设置偏移量，并提交消息到磁盘保存</li>
+<li>Broker为消费者提供服务，对读取分区的请求作出响应，返回消息</li>
+<li>多个Broker组成了Kafka集群，每个集群都有一个Broker充当集群控制器的角色</li>
+<li>控制器负责管理工作，包括将分区分给Broker和监控Broker等工作</li>
+<li>在Kafka集群中，一个分区从属于一个Broker,称为该分区的首领</li>
+<li>一个分区会分配给多个Broker,称为分区复制，来保证数据可靠性</li>
+<li>Kafka可以配置消息的保留策略，如果保留7天，或者文件大小到1GB等</li>
+</ul>
+<h4 id="3-5多集群"><a href="#3-5多集群" class="headerlink" title="3.5多集群"></a>3.5多集群</h4><ul>
+<li>在数据类型分离、安全需求隔离、多数据中心场景下、Kafka提供了多集群方案</li>
+<li>Kafka的消息复制机制只能在单个集群中进行</li>
+<li>Kafka提供了MirrorMaker的工具来实现集群间消息复制</li>
+</ul>
+<h3 id="4-总结"><a href="#4-总结" class="headerlink" title="4.总结"></a>4.总结</h3><h4 id="4-1-优势"><a href="#4-1-优势" class="headerlink" title="4.1 优势"></a>4.1 优势</h4><ul>
+<li>多个生产者</li>
+<li>多个消费者</li>
+<li>基于磁盘的数据存储</li>
+<li>灵活的伸缩性</li>
+<li>高性能</li>
+</ul>
+<h4 id="4-2-使用场景"><a href="#4-2-使用场景" class="headerlink" title="4.2 使用场景"></a>4.2 使用场景</h4><ul>
+<li>活动跟踪</li>
+<li>传递消息</li>
+<li>度量指标和日志记录</li>
+<li>提交日志</li>
+<li>流处理</li>
+</ul>
+<h4 id="4-3-历史"><a href="#4-3-历史" class="headerlink" title="4.3 历史"></a>4.3 历史</h4><ul>
+<li>最初由LinkedIn的开发团队开发</li>
+<li>2010年底在Github上开源</li>
+<li>2011年7月成为Apache软件基金会的孵化器项目</li>
+<li>2012年10月从孵化器项目毕业</li>
+<li>2014年秋，Kafka开发核心团队离开LinkedIn创办Confluent公司</li>
+</ul>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+      
+    
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Kafka/" rel="tag"># Kafka</a>
+          
+            <a href="/tags/大数据/" rel="tag"># 大数据</a>
+          
+            <a href="/tags/分布式/" rel="tag"># 分布式</a>
+          
+            <a href="/tags/消息队列/" rel="tag"># 消息队列</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/02/11/java8-stream/" rel="next" title="java8_stream">
+                <i class="fa fa-chevron-left"></i> java8_stream
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">AlexKing</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">22</span>
+                    <span class="site-state-item-name">日志</span>
+                  </a>
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-categories">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">6</span>
+                    <span class="site-state-item-name">分类</span>
+                  
+                </div>
+              
+
+              
+                
+                
+                <div class="site-state-item site-state-tags">
+                  
+                    
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                      
+                    
+                    <span class="site-state-item-count">13</span>
+                    <span class="site-state-item-name">标签</span>
+                  
+                </div>
+              
+            </nav>
+          
+
+          
+
+          
+
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </div>
+
+      
+      <!--noindex-->
+        <div class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+            
+            
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka系列之初识Kafka"><span class="nav-number">1.</span> <span class="nav-text">Kafka系列之初识Kafka</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-基本介绍"><span class="nav-number">1.1.</span> <span class="nav-text">1.基本介绍</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-发布与订阅消息系统"><span class="nav-number">1.2.</span> <span class="nav-text">2.发布与订阅消息系统</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Kafka基本概念"><span class="nav-number">1.3.</span> <span class="nav-text">3.Kafka基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-消息和批次"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 消息和批次</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-主题和分区"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 主题和分区</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-生产者和消费者"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3 生产者和消费者</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-4-Broer和集群"><span class="nav-number">1.3.4.</span> <span class="nav-text">3.4 Broer和集群</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-5多集群"><span class="nav-number">1.3.5.</span> <span class="nav-text">3.5多集群</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-总结"><span class="nav-number">1.4.</span> <span class="nav-text">4.总结</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-优势"><span class="nav-number">1.4.1.</span> <span class="nav-text">4.1 优势</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-使用场景"><span class="nav-number">1.4.2.</span> <span class="nav-text">4.2 使用场景</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3-历史"><span class="nav-number">1.4.3.</span> <span class="nav-text">4.3 历史</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </div>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">AlexKing</span>
+
+  
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a href="https://hexo.io" class="theme-link" rel="noopener" target="_blank">Hexo</a> 强力驱动 v3.8.0</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 – <a href="https://theme-next.org" class="theme-link" rel="noopener" target="_blank">NexT.Pisces</a> v6.7.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+    
+
+    
+  </div>
+
+  
+
+<script>
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+
+  
+
+
+  <script src="/js/src/utils.js?v=6.7.0"></script>
+
+  <script src="/js/src/motion.js?v=6.7.0"></script>
+
+
+
+  
+  
+
+
+  <script src="/js/src/affix.js?v=6.7.0"></script>
+
+  <script src="/js/src/schemes/pisces.js?v=6.7.0"></script>
+
+
+
+  
+  <script src="/js/src/scrollspy.js?v=6.7.0"></script>
+<script src="/js/src/post-details.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  <script src="/js/src/bootstrap.js?v=6.7.0"></script>
+
+
+
+  
+
+
+  
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
