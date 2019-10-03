@@ -96,18 +96,18 @@
 
 
 
-  <meta name="description" content="Kafka存储机制 Kafka的基本存储单元是分区 分区无法在多个broker间进行再细分 分区也无法在同一个broker的多个磁盘上进行细分 分区的大小受broker单个挂载点可用空间的限制 通过参数log.dirs来指定存储分区的挂载点（可以是多个目录）  1.分区分配在创建主题时，Kafka需要决定如何将分区合理分配到不同的broker上。合理分配分区需要达到如下目标：  broker之间平">
+  <meta name="description" content="Kafka系列之存储机制 Kafka的基本存储单元是分区 分区无法在多个broker间进行再细分 分区也无法在同一个broker的多个磁盘上进行细分 分区的大小受broker单个挂载点可用空间的限制 通过参数log.dirs来指定存储分区的挂载点（可以是多个目录）  1.分区分配在创建主题时，Kafka需要决定如何将分区合理分配到不同的broker上。合理分配分区需要达到如下目标：  broker">
 <meta name="keywords" content="Kafka,大数据,分布式,消息队列">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Kafka之存储机制">
+<meta property="og:title" content="Kafka系列之存储机制">
 <meta property="og:url" content="http://yoursite.com/2018/02/05/kafka_storage/index.html">
 <meta property="og:site_name" content="AlexKing&#39;s Blog">
-<meta property="og:description" content="Kafka存储机制 Kafka的基本存储单元是分区 分区无法在多个broker间进行再细分 分区也无法在同一个broker的多个磁盘上进行细分 分区的大小受broker单个挂载点可用空间的限制 通过参数log.dirs来指定存储分区的挂载点（可以是多个目录）  1.分区分配在创建主题时，Kafka需要决定如何将分区合理分配到不同的broker上。合理分配分区需要达到如下目标：  broker之间平">
+<meta property="og:description" content="Kafka系列之存储机制 Kafka的基本存储单元是分区 分区无法在多个broker间进行再细分 分区也无法在同一个broker的多个磁盘上进行细分 分区的大小受broker单个挂载点可用空间的限制 通过参数log.dirs来指定存储分区的挂载点（可以是多个目录）  1.分区分配在创建主题时，Kafka需要决定如何将分区合理分配到不同的broker上。合理分配分区需要达到如下目标：  broker">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-03-10T16:25:11.391Z">
+<meta property="og:updated_time" content="2019-10-03T07:10:36.382Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Kafka之存储机制">
-<meta name="twitter:description" content="Kafka存储机制 Kafka的基本存储单元是分区 分区无法在多个broker间进行再细分 分区也无法在同一个broker的多个磁盘上进行细分 分区的大小受broker单个挂载点可用空间的限制 通过参数log.dirs来指定存储分区的挂载点（可以是多个目录）  1.分区分配在创建主题时，Kafka需要决定如何将分区合理分配到不同的broker上。合理分配分区需要达到如下目标：  broker之间平">
+<meta name="twitter:title" content="Kafka系列之存储机制">
+<meta name="twitter:description" content="Kafka系列之存储机制 Kafka的基本存储单元是分区 分区无法在多个broker间进行再细分 分区也无法在同一个broker的多个磁盘上进行细分 分区的大小受broker单个挂载点可用空间的限制 通过参数log.dirs来指定存储分区的挂载点（可以是多个目录）  1.分区分配在创建主题时，Kafka需要决定如何将分区合理分配到不同的broker上。合理分配分区需要达到如下目标：  broker">
 
 
 
@@ -124,7 +124,7 @@
   };
 </script>
 
-  <title>Kafka之存储机制 | AlexKing's Blog</title>
+  <title>Kafka系列之存储机制 | AlexKing's Blog</title>
   
 
 
@@ -323,7 +323,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Kafka之存储机制
+          <h1 class="post-title" itemprop="name headline">Kafka系列之存储机制
 
               
             
@@ -366,7 +366,7 @@
                 
                   <span class="post-meta-item-text">更新于</span>
                 
-                <time title="修改时间：2019-03-11 00:25:11" itemprop="dateModified" datetime="2019-03-11T00:25:11+08:00">2019-03-11</time>
+                <time title="修改时间：2019-10-03 15:10:36" itemprop="dateModified" datetime="2019-10-03T15:10:36+08:00">2019-10-03</time>
               
             
           </span>
@@ -418,7 +418,7 @@
       
 
       
-        <h2 id="Kafka存储机制"><a href="#Kafka存储机制" class="headerlink" title="Kafka存储机制"></a>Kafka存储机制</h2><ul>
+        <h2 id="Kafka系列之存储机制"><a href="#Kafka系列之存储机制" class="headerlink" title="Kafka系列之存储机制"></a>Kafka系列之存储机制</h2><ul>
 <li>Kafka的基本存储单元是分区</li>
 <li>分区无法在多个broker间进行再细分</li>
 <li>分区也无法在同一个broker的多个磁盘上进行细分</li>
@@ -668,7 +668,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka存储机制"><span class="nav-number">1.</span> <span class="nav-text">Kafka存储机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-分区分配"><span class="nav-number">1.1.</span> <span class="nav-text">1.分区分配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-存储目录的确定"><span class="nav-number">1.2.</span> <span class="nav-text">2.存储目录的确定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-消息保留"><span class="nav-number">1.3.</span> <span class="nav-text">3.消息保留</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-文件格式"><span class="nav-number">1.4.</span> <span class="nav-text">4.文件格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-索引"><span class="nav-number">1.5.</span> <span class="nav-text">5.索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-清理"><span class="nav-number">1.6.</span> <span class="nav-text">6.清理</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka系列之存储机制"><span class="nav-number">1.</span> <span class="nav-text">Kafka系列之存储机制</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-分区分配"><span class="nav-number">1.1.</span> <span class="nav-text">1.分区分配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-存储目录的确定"><span class="nav-number">1.2.</span> <span class="nav-text">2.存储目录的确定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-消息保留"><span class="nav-number">1.3.</span> <span class="nav-text">3.消息保留</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-文件格式"><span class="nav-number">1.4.</span> <span class="nav-text">4.文件格式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-索引"><span class="nav-number">1.5.</span> <span class="nav-text">5.索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-清理"><span class="nav-number">1.6.</span> <span class="nav-text">6.清理</span></a></li></ol></li></ol></div>
             
 
           </div>
