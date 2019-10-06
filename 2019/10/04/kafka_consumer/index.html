@@ -96,25 +96,25 @@
 
 
 
-  <meta name="description" content="Kafka系列之消费者">
+  <meta name="description" content="Kafka系列之消费者1.基本概念1.1 消费者消费者就是从Kafka接收消息并进行处理的客户端程序 1.2 消费者群组 消费者群组是一组消费者的集合，一个群组里的消费者订阅的是同一个主题，每个消费者接收主题的一部分分区的消息  如果主题的分区数量小于消费者群组中消费者的数量，那么部分消费者就会被闲置  通过往群组里添加消费者是横向伸缩消费能力的主要方式 多个消费者群组之间相互不影响，都可以接收全">
 <meta name="keywords" content="Kafka,大数据,分布式,消息队列">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Kafka系列之消费者">
-<meta property="og:url" content="http://yoursite.com/2019/10/03/kafka_consumer/index.html">
+<meta property="og:url" content="http://yoursite.com/2019/10/04/kafka_consumer/index.html">
 <meta property="og:site_name" content="AlexKing&#39;s Blog">
-<meta property="og:description" content="Kafka系列之消费者">
+<meta property="og:description" content="Kafka系列之消费者1.基本概念1.1 消费者消费者就是从Kafka接收消息并进行处理的客户端程序 1.2 消费者群组 消费者群组是一组消费者的集合，一个群组里的消费者订阅的是同一个主题，每个消费者接收主题的一部分分区的消息  如果主题的分区数量小于消费者群组中消费者的数量，那么部分消费者就会被闲置  通过往群组里添加消费者是横向伸缩消费能力的主要方式 多个消费者群组之间相互不影响，都可以接收全">
 <meta property="og:locale" content="zh-CN">
-<meta property="og:updated_time" content="2019-10-03T14:24:00.458Z">
+<meta property="og:updated_time" content="2019-10-04T14:21:44.644Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Kafka系列之消费者">
-<meta name="twitter:description" content="Kafka系列之消费者">
+<meta name="twitter:description" content="Kafka系列之消费者1.基本概念1.1 消费者消费者就是从Kafka接收消息并进行处理的客户端程序 1.2 消费者群组 消费者群组是一组消费者的集合，一个群组里的消费者订阅的是同一个主题，每个消费者接收主题的一部分分区的消息  如果主题的分区数量小于消费者群组中消费者的数量，那么部分消费者就会被闲置  通过往群组里添加消费者是横向伸缩消费能力的主要方式 多个消费者群组之间相互不影响，都可以接收全">
 
 
 
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/10/03/kafka_consumer/">
+  <link rel="canonical" href="http://yoursite.com/2019/10/04/kafka_consumer/">
 
 
 
@@ -306,7 +306,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/03/kafka_consumer/">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/10/04/kafka_consumer/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="AlexKing">
@@ -349,7 +349,7 @@
                 
               
 
-              <time title="创建时间：2019-10-03 16:22:57 / 修改时间：22:24:00" itemprop="dateCreated datePublished" datetime="2019-10-03T16:22:57+08:00">2019-10-03</time>
+              <time title="创建时间：2019-10-04 10:22:57 / 修改时间：22:21:44" itemprop="dateCreated datePublished" datetime="2019-10-04T10:22:57+08:00">2019-10-04</time>
             
 
             
@@ -406,7 +406,49 @@
       
 
       
-        <h2 id="Kafka系列之消费者"><a href="#Kafka系列之消费者" class="headerlink" title="Kafka系列之消费者"></a>Kafka系列之消费者</h2>
+        <h2 id="Kafka系列之消费者"><a href="#Kafka系列之消费者" class="headerlink" title="Kafka系列之消费者"></a>Kafka系列之消费者</h2><h3 id="1-基本概念"><a href="#1-基本概念" class="headerlink" title="1.基本概念"></a>1.基本概念</h3><h4 id="1-1-消费者"><a href="#1-1-消费者" class="headerlink" title="1.1 消费者"></a>1.1 消费者</h4><p>消费者就是从Kafka接收消息并进行处理的客户端程序</p>
+<h4 id="1-2-消费者群组"><a href="#1-2-消费者群组" class="headerlink" title="1.2 消费者群组"></a>1.2 消费者群组</h4><ul>
+<li><p>消费者群组是一组消费者的集合，一个群组里的消费者订阅的是同一个主题，每个消费者接收主题的一部分分区的消息</p>
+</li>
+<li><p>如果主题的分区数量小于消费者群组中消费者的数量，那么部分消费者就会被闲置</p>
+</li>
+<li>通过往群组里添加消费者是横向伸缩消费能力的主要方式</li>
+<li>多个消费者群组之间相互不影响，都可以接收全部的消息</li>
+</ul>
+<h3 id="2-消费者群组和分区再均衡"><a href="#2-消费者群组和分区再均衡" class="headerlink" title="2. 消费者群组和分区再均衡"></a>2. 消费者群组和分区再均衡</h3><ul>
+<li>分区的所有权从一个消费者转移到另一个消费者的行为被称为分区再均衡</li>
+</ul>
+<h3 id="3-消息消费过程"><a href="#3-消息消费过程" class="headerlink" title="3.消息消费过程"></a>3.消息消费过程</h3><h4 id="3-1-创建Kafka消费者"><a href="#3-1-创建Kafka消费者" class="headerlink" title="3.1 创建Kafka消费者"></a>3.1 创建Kafka消费者</h4><p>要读取Kafka中的消息，首先要创建一个KafkaConsumer对象，并配置一些属性，消费者有很多属性可以配置，不过有三个属性是必须配置的：</p>
+<ul>
+<li>bootstrap.servers 用于指定broker的地址清单，格式为host:port，不需要包含所有broker信息，生产者可以从给定的broker中找到其他broker信息，但是建议至少要提供两个broker信息，从而提供高可用的保证</li>
+<li>key.deserializer 用于指定key的反序列化方式，需要与生产者的序列化方式保持对应</li>
+<li>value.deserializer 用于指定value的反序列化方式，需要与生产者的序列化方式保持对应</li>
+<li>group.id 属性非必需，但是一般我们都会给消费者指定一个消费者群组</li>
+</ul>
+<h4 id="3-2-订阅主题"><a href="#3-2-订阅主题" class="headerlink" title="3.2 订阅主题"></a>3.2 订阅主题</h4><h4 id="3-3-轮询消息"><a href="#3-3-轮询消息" class="headerlink" title="3.3 轮询消息"></a>3.3 轮询消息</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 1.配置消费者属性</span></span><br><span class="line">Properties props = <span class="keyword">new</span> Properties();</span><br><span class="line">props.put(<span class="string">"bootstrap.serveres"</span>, <span class="string">"broker1:9092,broker2:9092"</span>);</span><br><span class="line">props.put(<span class="string">"key.deserializer"</span>, <span class="string">"org.apache.kafka.common.serialization.StringDeserializer"</span>);</span><br><span class="line">props.put(<span class="string">"value.deserializer"</span>, <span class="string">"org.apache.kafka.common.serialization.StringDeserializer"</span>);</span><br><span class="line">props.put(<span class="string">"group.id"</span>, <span class="string">"CountryCounter"</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 2.创建消费者实例</span></span><br><span class="line">KafkaConsumer&lt;String, String&gt; consumer = <span class="keyword">new</span> KafkaConsumer&lt;String, String&gt;(props);</span><br><span class="line"></span><br><span class="line"><span class="comment">// 3.订阅Topic</span></span><br><span class="line">String topicName = <span class="string">"customerCountries"</span>;</span><br><span class="line">consumer.subscribe(Collections.singletonList(topicName));</span><br><span class="line"></span><br><span class="line"><span class="comment">// 4.轮询方式消费消息</span></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">while</span>(<span class="keyword">true</span>) &#123;</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 4.1 获取一个批次的消息</span></span><br><span class="line">        ConsumerRecords&lt;String, String&gt; records = consumer.poll(<span class="number">100</span>);</span><br><span class="line">        </span><br><span class="line">        <span class="comment">// 4.2 对一个批次的消息迭代处理</span></span><br><span class="line">        <span class="keyword">for</span> (ConsumerRecord&lt;String, String&gt; record : records) &#123;</span><br><span class="line">            log.debug(<span class="string">"topic = %s, partition = %s, offset = %d, key = %s, vaule = %s \n"</span>,</span><br><span class="line">                     record.topic(),</span><br><span class="line">                     record.partition(),</span><br><span class="line">                     record.offset(),</span><br><span class="line">                     record.key(),</span><br><span class="line">                     record.value());</span><br><span class="line">            <span class="comment">// TODO 对消息进行处理   </span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">    consumer.close();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="4-消费者配置"><a href="#4-消费者配置" class="headerlink" title="4.消费者配置"></a>4.消费者配置</h3><ul>
+<li>fetch.min.bytes</li>
+<li>fetch.max.wait.ms</li>
+<li>max.partition.fetch.bytes</li>
+<li>session.timeout.ms</li>
+<li>auto.offset.reset</li>
+<li>enable.auto.commit</li>
+<li>partition.assignment.strategy</li>
+<li>client.id</li>
+<li>max.poll.records</li>
+<li>receive/send.buffer.bytes</li>
+</ul>
+<h3 id="5-提交和偏移量"><a href="#5-提交和偏移量" class="headerlink" title="5.提交和偏移量"></a>5.提交和偏移量</h3><p>几种提交方式：</p>
+<ul>
+<li>自动提交</li>
+<li>手动同步提交</li>
+<li>手动异步提交</li>
+<li>同步和异步组合提交</li>
+<li>提交特定的偏移量</li>
+</ul>
+<p>如果不提交的话会影响后续消息的消费嘛？还是只是在发生分区再均衡时才会影响？</p>
+<h3 id="6-反序列化器"><a href="#6-反序列化器" class="headerlink" title="6.反序列化器"></a>6.反序列化器</h3><p>消费者的反序列化器是跟生产者的序列化器相对应的</p>
+
       
     </div>
 
@@ -448,8 +490,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/10/03/kafka_introduction/" rel="next" title="Kafka系列之初识Kafka">
-                <i class="fa fa-chevron-left"></i> Kafka系列之初识Kafka
+              <a href="/2019/10/03/kafka_stream/" rel="next" title="Kafka系列之Kafka Stream">
+                <i class="fa fa-chevron-left"></i> Kafka系列之Kafka Stream
               </a>
             
           </div>
@@ -457,10 +499,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/10/03/kafka_manage/" rel="prev" title="Kafka系列之Kafka管理">
-                Kafka系列之Kafka管理 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -630,7 +668,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka系列之消费者"><span class="nav-number">1.</span> <span class="nav-text">Kafka系列之消费者</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Kafka系列之消费者"><span class="nav-number">1.</span> <span class="nav-text">Kafka系列之消费者</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-基本概念"><span class="nav-number">1.1.</span> <span class="nav-text">1.基本概念</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-1-消费者"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.1 消费者</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#1-2-消费者群组"><span class="nav-number">1.1.2.</span> <span class="nav-text">1.2 消费者群组</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-消费者群组和分区再均衡"><span class="nav-number">1.2.</span> <span class="nav-text">2. 消费者群组和分区再均衡</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-消息消费过程"><span class="nav-number">1.3.</span> <span class="nav-text">3.消息消费过程</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1-创建Kafka消费者"><span class="nav-number">1.3.1.</span> <span class="nav-text">3.1 创建Kafka消费者</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2-订阅主题"><span class="nav-number">1.3.2.</span> <span class="nav-text">3.2 订阅主题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3-轮询消息"><span class="nav-number">1.3.3.</span> <span class="nav-text">3.3 轮询消息</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-消费者配置"><span class="nav-number">1.4.</span> <span class="nav-text">4.消费者配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-提交和偏移量"><span class="nav-number">1.5.</span> <span class="nav-text">5.提交和偏移量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-反序列化器"><span class="nav-number">1.6.</span> <span class="nav-text">6.反序列化器</span></a></li></ol></li></ol></div>
             
 
           </div>
